@@ -692,3 +692,11 @@ def get_my_invoices(
         })
 
     return result
+
+@app.get("/admin/users")
+def get_users(admin_key: str, db: Session = Depends(get_db)):
+    if admin_key != "supersecret123":  # simple password
+        raise HTTPException(401, "Unauthorized")
+    users = db.query(models.User).all()
+    # Return only safe info
+    return [{"id": u.id, "username": u.username, "email": u.email, "mobile": u.mobile} for u in users]
