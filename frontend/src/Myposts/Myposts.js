@@ -24,9 +24,12 @@ export default function Myposts() {
     const fetchMyPosts = async () => {
       try {
         const token = localStorage.getItem("token");
-        const res = await fetch("http://localhost:8000/posts/mine", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const res = await fetch(
+          "https://blog-management-system-y5tx.onrender.com/posts/mine",
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          },
+        );
         if (!res.ok) throw new Error("Failed to fetch your posts");
         const data = await res.json();
 
@@ -139,7 +142,7 @@ export default function Myposts() {
                 {post.images.map((img, i) => (
                   <img
                     key={i}
-                    src={`http://localhost:8000${img.replace(/\\/g, "/")}`}
+                    src={`https://blog-management-system-y5tx.onrender.com${img.replace(/\\/g, "/")}`}
                     alt={`Post ${i}`}
                   />
                 ))}

@@ -64,7 +64,7 @@ export default function Myinvoice() {
 
               <a
                 className="invoice-btn"
-                href={`http://localhost:8000/${inv.invoice}`}
+                href={`https://blog-management-system-y5tx.onrender.com/${inv.invoice}`}
                 target="_blank"
                 rel="noreferrer"
               >

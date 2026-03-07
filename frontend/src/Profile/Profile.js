@@ -116,7 +116,7 @@ export default function Profile() {
               <div className="profile-card">
                 {profile.profile_image && (
                   <img
-                    src={`http://localhost:8000${profile.profile_image}`}
+                    src={`https://blog-management-system-y5tx.onrender.com${profile.profile_image}`}
                     alt="Profile"
                     className="profile-img"
                   />

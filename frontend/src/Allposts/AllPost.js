@@ -28,9 +28,12 @@ export default function AllPost() {
         limit: 9,
         search: searchTerm,
       });
-      const res = await fetch(`http://localhost:8000/posts?${query}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const res = await fetch(
+        `https://blog-management-system-y5tx.onrender.com/posts?${query}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      );
 
       if (!res.ok) throw new Error("Failed to fetch posts");
       const data = await res.json();
@@ -62,10 +65,13 @@ export default function AllPost() {
     try {
       const token = localStorage.getItem("token");
 
-      const res = await fetch(`http://localhost:8000/posts/${postId}/like`, {
-        method: "POST",
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const res = await fetch(
+        `https://blog-management-system-y5tx.onrender.com/posts/${postId}/like`,
+        {
+          method: "POST",
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      );
 
       if (res.status === 403) {
         setPopupMsg("Upgrade your subscription to like more posts.");
@@ -169,7 +175,7 @@ export default function AllPost() {
                     ).map((img, i) => (
                       <img
                         key={i}
-                        src={`http://localhost:8000${img.replace("\\", "/")}`}
+                        src={`https://blog-management-system-y5tx.onrender.com${img.replace("\\", "/")}`}
                         alt={`Post ${i}`}
                       />
                     ))}
