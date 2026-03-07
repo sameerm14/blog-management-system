@@ -1,0 +1,199 @@
+/* Container for all posts */
+.posts-container {
+  max-width: 1200px;
+  margin: 50px auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 30px;
+  padding: 0 15px;
+}
+
+/* Each post card */
+.post-card {
+  background: #ffffff;
+  padding: 25px;
+  border-radius: 18px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  text-align: center;
+  transition:
+    transform 0.4s ease,
+    box-shadow 0.4s ease;
+}
+
+/* Hover effect */
+.post-card:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+}
+
+/* Post title */
+.post-card h3 {
+  margin-bottom: 15px;
+  color: #1e1e1e;
+  font-size: 1.4rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+/* Post content */
+.post-card p {
+  color: #555555;
+  font-size: 1rem;
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+/* Images wrapper */
+.post-images {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center; /* center images inside card */
+  gap: 12px;
+  width: 100%;
+}
+
+/* Individual images */
+.post-images img {
+  width: calc(50% - 6px); /* two images per row */
+  max-height: 180px;
+  object-fit: cover;
+  border-radius: 12px;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+  cursor: pointer;
+}
+
+/* Image hover effect */
+.post-images img:hover {
+  transform: scale(1.08) rotate(1deg);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* Pagination */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  margin: 30px 0;
+  font-weight: 600;
+}
+
+.pagination button {
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: none;
+  background-color: #1e90ff;
+  color: white;
+  cursor: pointer;
+  transition:
+    background 0.3s ease,
+    transform 0.3s ease;
+}
+
+.pagination button:hover:not(:disabled) {
+  background-color: #0d6efd;
+  transform: scale(1.05);
+}
+
+.pagination button:disabled {
+  cursor: not-allowed;
+  background-color: #cccccc;
+}
+
+/* Search form */
+.search-form {
+  max-width: 600px;
+  margin: 0 auto 40px auto;
+  display: flex;
+  gap: 10px;
+}
+
+.search-form input {
+  flex: 1;
+  padding: 10px 15px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  font-size: 1rem;
+  outline: none;
+  transition: border 0.3s ease;
+}
+
+.search-form input:focus {
+  border-color: #1e90ff;
+}
+
+.search-form button {
+  padding: 10px 20px;
+  border-radius: 10px;
+  border: none;
+  background-color: #1e90ff;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background 0.3s ease,
+    transform 0.3s ease;
+}
+
+.search-form button:hover {
+  background-color: #0d6efd;
+  transform: scale(1.05);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .post-images img {
+    width: 100%; /* single image per row on smaller screens */
+  }
+
+  .post-card {
+    padding: 20px;
+  }
+}
+.upgrade-popup {
+  position: fixed;
+  top: 70px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #ff9800;
+  color: white;
+  padding: 12px 22px;
+  border-radius: 6px;
+  font-weight: 500;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  z-index: 999;
+}
+.no-posts-wrapper {
+  width: 100%;
+  min-height: calc(70vh - 90px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  grid-column: 1 / -1; /* VERY IMPORTANT for grid layouts */
+}
+
+.no-posts-box {
+  text-align: center;
+  padding: 40px 60px;
+  border-radius: 12px;
+  background: #ffffff;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  animation: fadeUp 0.5s ease;
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(25px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

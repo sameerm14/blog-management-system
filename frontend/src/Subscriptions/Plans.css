@@ -1,0 +1,136 @@
+.plans-page {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #eef2ff, #f8fafc);
+  padding: 80px 20px;
+  font-family: "Segoe UI", sans-serif;
+  text-align: center;
+}
+
+.title {
+  font-size: 36px;
+  margin-bottom: 60px;
+  color: #1f2937;
+}
+
+/* container */
+
+.plans-container {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  flex-wrap: wrap;
+}
+
+/* plan card */
+
+.plan-card {
+  background: white;
+  width: 280px;
+  padding: 40px 25px;
+  border-radius: 14px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+  position: relative;
+  transition: all 0.35s ease;
+}
+
+/* hover animation */
+
+.plan-card:hover {
+  transform: translateY(-12px) scale(1.03);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+}
+
+/* popular */
+
+.popular {
+  border: 2px solid #6366f1;
+  transform: scale(1.05);
+}
+
+/* badge */
+
+.badge {
+  position: absolute;
+  top: -12px;
+  right: 20px;
+  background: #6366f1;
+  color: white;
+  padding: 5px 12px;
+  font-size: 12px;
+  border-radius: 20px;
+}
+
+/* price */
+
+.price {
+  font-size: 32px;
+  margin: 15px 0;
+  color: #6366f1;
+}
+
+/* features */
+
+.plan-card ul {
+  list-style: none;
+  padding: 0;
+  margin: 25px 0;
+}
+
+.plan-card li {
+  margin: 12px 0;
+  color: #4b5563;
+}
+
+/* button */
+
+.plan-card button {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  background: #6366f1;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+/* button hover */
+
+.plan-card button:hover {
+  background: #4f46e5;
+  transform: scale(1.05);
+}
+.notification {
+  position: absolute;
+  top: 80px; /* below navbar */
+  left: 50%;
+  transform: translateX(-50%);
+  background: #e8ddd2; /* soft mint green */
+  color: #000000; /* dark-ish green text, easy on eyes */
+  padding: 12px 24px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  font-weight: 600;
+  z-index: 100;
+  animation: fadeInOut 3s ease forwards;
+  text-align: center;
+  max-width: 70%;
+  font-size: 16px;
+}
+
+@keyframes fadeInOut {
+  0% {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-10px);
+  }
+  10%,
+  90% {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-10px);
+  }
+}

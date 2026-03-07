@@ -1,0 +1,144 @@
+/* PAGE */
+
+.notification-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #f5f7fb;
+}
+
+/* CONTAINER */
+
+.notifications-container {
+  width: 100%;
+  max-width: 1000px;
+  margin: 80px auto;
+  padding: 0 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* TITLE */
+
+.notifications-container h2 {
+  font-size: 26px;
+  font-weight: 700;
+  color: #1f2937;
+  text-align: center;
+}
+
+/* CARD */
+
+.notification-card {
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  border: 1px solid #ececec;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  transition: 0.25s;
+  width: 100%;
+}
+
+.notification-card:hover {
+  transform: translateY(-3px);
+}
+
+/* POST TITLE */
+
+.notification-card h3 {
+  font-size: 18px;
+  color: #111827;
+  margin-bottom: 6px;
+}
+
+/* INFO */
+
+.notification-card p {
+  font-size: 14px;
+  color: #6b7280;
+  margin-bottom: 12px;
+}
+
+/* COMMENTS */
+
+.notification-card ul {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.notification-card li {
+  background: #f3f4f6;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  color: #374151;
+}
+
+/* EMPTY */
+
+.no-notifications {
+  text-align: center;
+  font-size: 15px;
+  color: #6b7280;
+  margin-top: 100px;
+}
+
+/* MOBILE */
+
+@media (max-width: 768px) {
+  .notifications-container {
+    width: 92%;
+    margin: 60px auto;
+  }
+
+  .notification-card {
+    padding: 16px;
+  }
+
+  .notification-card h3 {
+    font-size: 16px;
+  }
+}
+/* MOBILE RESPONSIVE */
+
+@media (max-width: 768px) {
+  .notifications-container {
+    width: 100%;
+    padding: 0 12px;
+    margin: 60px auto;
+  }
+
+  .notification-card {
+    width: 100%;
+  }
+
+  .notification-card h3 {
+    font-size: 16px;
+  }
+
+  .notification-card p {
+    font-size: 13px;
+  }
+
+  .notification-card ul {
+    gap: 5px;
+  }
+
+  .notification-card li {
+    font-size: 12px;
+    padding: 7px 10px;
+  }
+
+  .notifications-container h2 {
+    font-size: 22px;
+  }
+
+  .no-notifications {
+    font-size: 14px;
+    margin-top: 80px;
+  }
+}
