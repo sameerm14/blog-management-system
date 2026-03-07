@@ -17,7 +17,7 @@ export default function Register() {
     e.preventDefault();
 
     const response = await fetch(
-      "http://blog-management-system-y5tx.onrender.com/auth/register",
+      "https://blog-management-system-y5tx.onrender.com/auth/register",
       {
         method: "POST",
         headers: {

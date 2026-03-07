@@ -16,7 +16,7 @@ export default function Login() {
     e.preventDefault();
 
     const response = await fetch(
-      "http://blog-management-system-y5tx.onrender.com/auth/login",
+      "https://blog-management-system-y5tx.onrender.com/auth/login",
       {
         method: "POST",
         headers: {

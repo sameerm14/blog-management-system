@@ -61,7 +61,7 @@ export default function Profile() {
 
     try {
       const res = await fetch(
-        "http://blog-management-system-y5tx.onrender.com/profile",
+        "https://blog-management-system-y5tx.onrender.com/profile",
         {
           method: "PUT",
           headers: { Authorization: `Bearer ${token}` },

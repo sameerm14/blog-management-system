@@ -19,7 +19,7 @@ export default function Notification() {
     try {
       const token = localStorage.getItem("token");
       const res = await fetch(
-        "http://blog-management-system-y5tx.onrender.com/dashboard/notifications",
+        "https://blog-management-system-y5tx.onrender.com/dashboard/notifications",
         {
           headers: { Authorization: `Bearer ${token}` },
         },

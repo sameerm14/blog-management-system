@@ -38,7 +38,7 @@ export default function Createposts() {
 
     try {
       const res = await fetch(
-        "http://blog-management-system-y5tx.onrender.com/posts",
+        "https://blog-management-system-y5tx.onrender.com/posts",
         {
           method: "POST",
           headers: {

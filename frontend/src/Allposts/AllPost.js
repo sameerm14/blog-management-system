@@ -97,7 +97,7 @@ export default function AllPost() {
       const token = localStorage.getItem("token");
 
       const res = await fetch(
-        `http://blog-management-system-y5tx.onrender.com/posts/${postId}/comment`,
+        `https://blog-management-system-y5tx.onrender.com/posts/${postId}/comment`,
         {
           method: "POST",
           headers: {

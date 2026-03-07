@@ -16,7 +16,7 @@ export default function Dashboard() {
 
     try {
       const res = await fetch(
-        "http://blog-management-system-y5tx.onrender.com/subscription/check",
+        "https://blog-management-system-y5tx.onrender.com/subscription/check",
         {
           headers: {
             Authorization: `Bearer ${token}`,

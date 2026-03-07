@@ -19,7 +19,7 @@ export default function Plans() {
 
     try {
       const res = await fetch(
-        `http://blog-management-system-y5tx.onrender.com/subscribe/${plan}`,
+        `https://blog-management-system-y5tx.onrender.com/subscribe/${plan}`,
         {
           method: "POST",
           headers: {
