@@ -37,13 +37,16 @@ export default function Createposts() {
     images.forEach((img) => formData.append("images", img)); // multiple images
 
     try {
-      const res = await fetch("http://localhost:8000/posts", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
+      const res = await fetch(
+        "http://blog-management-system-y5tx.onrender.com/posts",
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          body: formData,
         },
-        body: formData,
-      });
+      );
 
       if (res.status === 403) {
         setLimitMsg(

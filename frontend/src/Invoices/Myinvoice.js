@@ -13,7 +13,7 @@ export default function Myinvoice() {
   useEffect(() => {
     const token = localStorage.getItem("token");
 
-    fetch("http://localhost:8000/my-invoices", {
+    fetch("http://blog-management-system-y5tx.onrender.com/my-invoices", {
       headers: {
         Authorization: `Bearer ${token}`,
       },

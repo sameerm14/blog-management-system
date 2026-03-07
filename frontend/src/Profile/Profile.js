@@ -60,11 +60,14 @@ export default function Profile() {
     if (image) formData.append("image", image);
 
     try {
-      const res = await fetch("http://localhost:8000/profile", {
-        method: "PUT",
-        headers: { Authorization: `Bearer ${token}` },
-        body: formData,
-      });
+      const res = await fetch(
+        "http://blog-management-system-y5tx.onrender.com/profile",
+        {
+          method: "PUT",
+          headers: { Authorization: `Bearer ${token}` },
+          body: formData,
+        },
+      );
 
       if (res.ok) {
         const data = await res.json();

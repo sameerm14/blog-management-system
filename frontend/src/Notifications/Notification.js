@@ -18,9 +18,12 @@ export default function Notification() {
     setError("");
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch("http://localhost:8000/dashboard/notifications", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const res = await fetch(
+        "http://blog-management-system-y5tx.onrender.com/dashboard/notifications",
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      );
       if (!res.ok) throw new Error("Failed to fetch interactions");
       const data = await res.json();
       setInteractions(data);

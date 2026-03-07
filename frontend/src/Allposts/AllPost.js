@@ -96,14 +96,17 @@ export default function AllPost() {
     try {
       const token = localStorage.getItem("token");
 
-      const res = await fetch(`http://localhost:8000/posts/${postId}/comment`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+      const res = await fetch(
+        `http://blog-management-system-y5tx.onrender.com/posts/${postId}/comment`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ text: commentText }),
         },
-        body: JSON.stringify({ text: commentText }),
-      });
+      );
 
       if (res.status === 403) {
         setPopupMsg("Upgrade your subscription to add more comments.");

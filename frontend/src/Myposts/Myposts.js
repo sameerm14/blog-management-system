@@ -51,10 +51,13 @@ export default function Myposts() {
         try {
           const token = localStorage.getItem("token");
 
-          const res = await fetch(`http://localhost:8000/posts/${postId}`, {
-            method: "DELETE",
-            headers: { Authorization: `Bearer ${token}` },
-          });
+          const res = await fetch(
+            `http://blog-management-system-y5tx.onrender.com/posts/${postId}`,
+            {
+              method: "DELETE",
+              headers: { Authorization: `Bearer ${token}` },
+            },
+          );
 
           if (!res.ok) throw new Error("Failed to delete post");
 

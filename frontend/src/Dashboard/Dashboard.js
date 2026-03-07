@@ -15,11 +15,14 @@ export default function Dashboard() {
     const token = localStorage.getItem("token");
 
     try {
-      const res = await fetch("http://localhost:8000/subscription/check", {
-        headers: {
-          Authorization: `Bearer ${token}`,
+      const res = await fetch(
+        "http://blog-management-system-y5tx.onrender.com/subscription/check",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         },
-      });
+      );
 
       if (res.status === 403) {
         navigate("/plans"); // redirect to subscription page
