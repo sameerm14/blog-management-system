@@ -27,9 +27,12 @@ export default function Profile() {
       }
 
       try {
-        const res = await fetch("http://localhost:8000/profile", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const res = await fetch(
+          "https://blog-management-system-y5tx.onrender.com/profile",
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          },
+        );
 
         if (res.ok) {
           const data = await res.json();
