@@ -197,3 +197,8 @@
     transform: translateY(0);
   }
 }
+.post-author {
+  font-size: 13px;
+  color: #666;
+  margin-bottom: 6px;
+}

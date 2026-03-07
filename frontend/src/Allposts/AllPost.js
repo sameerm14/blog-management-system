@@ -165,6 +165,7 @@ export default function AllPost() {
             posts.map((post) => (
               <div key={post.id} className="post-card">
                 <h3>{post.title}</h3>
+                <p className="post-author">Posted by {post.author_username}</p>
                 <p>{post.content}</p>
 
                 {post.images && (

@@ -25,7 +25,7 @@ class Post(Base):
     author_id = Column(Integer, ForeignKey("users.id"))
     created_at = Column(DateTime, default=datetime.utcnow)
     images = Column(Text, nullable=True)  
-
+    user = relationship("User") 
 
 
 class Comment(Base):

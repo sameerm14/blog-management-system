@@ -244,6 +244,7 @@ def get_posts(
             "title": post.title,
             "content": post.content,
             "author_id": post.author_id,
+            "author_username": post.user.username,
             "created_at": post.created_at,
             "images": post.images.split(",") if post.images else []
         })
