@@ -35,7 +35,10 @@ export default function UserDashboard() {
       },
     })
       .then((res) => res.json())
-      .then((data) => setDashboard(data))
+      .then((data) => {
+        console.log(data.posts.map((p) => p.created_at)); // <-- check raw dates
+        setDashboard(data);
+      })
       .catch((err) => console.error(err));
   }, []);
 
