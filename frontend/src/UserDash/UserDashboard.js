@@ -42,7 +42,6 @@ export default function UserDashboard() {
   if (!dashboard)
     return <p style={{ textAlign: "center", margin: "2rem" }}>Loading...</p>;
 
-  // Overview Cards
   const {
     total_posts,
     total_comments_made,
@@ -51,7 +50,7 @@ export default function UserDashboard() {
     posts,
   } = dashboard;
 
-  // Bar Chart - Likes vs Comments per post
+  // Chart data...
   const postTitles = posts.map((p) => p.title);
   const likes = posts.map((p) => p.likes);
   const comments = posts.map((p) => p.comments);
@@ -80,11 +79,10 @@ export default function UserDashboard() {
     },
   };
 
-  // Line Chart - Post activity over time (views per post creation date)
   const lineLabels = posts.map((p) =>
     new Date(p.created_at).toLocaleDateString(),
   );
-  const lineData = posts.map((p) => p.likes + p.comments); // simple activity metric
+  const lineData = posts.map((p) => p.likes + p.comments);
 
   const lineChartData = {
     labels: lineLabels,
@@ -106,34 +104,36 @@ export default function UserDashboard() {
       title: { display: true, text: "Post Activity Over Time" },
     },
   };
+
   return (
-    <div className="dashboard-stats">
-      <div className="stats-cards">
-        <div className="card">
-          <h3>Total Posts</h3>
-          <p>{total_posts}</p>
-        </div>
-        <div className="card">
-          <h3>Total Comments</h3>
-          <p>{total_comments_made}</p>
-        </div>
-        <div className="card">
-          <h3>Total Likes Received</h3>
-          <p>{total_likes_received}</p>
-        </div>
-        <div className="card">
-          <h3>Total Views</h3>
-          <p>{total_views}</p>
-        </div>
-      </div>
-
-      <div className="charts">
-        <div className="chart-container">
-          <Bar data={barData} options={barOptions} />
+    <div className="user-stats">
+      <div className="dashboard-stats">
+        <div className="stats-cards">
+          <div className="card">
+            <h3>Total Posts</h3>
+            <p>{total_posts}</p>
+          </div>
+          <div className="card">
+            <h3>Total Comments</h3>
+            <p>{total_comments_made}</p>
+          </div>
+          <div className="card">
+            <h3>Total Likes Received</h3>
+            <p>{total_likes_received}</p>
+          </div>
+          <div className="card">
+            <h3>Total Views</h3>
+            <p>{total_views}</p>
+          </div>
         </div>
 
-        <div className="chart-container">
-          <Line data={lineChartData} options={lineOptions} />
+        <div className="charts">
+          <div className="chart-container">
+            <Bar data={barData} options={barOptions} />
+          </div>
+          <div className="chart-container">
+            <Line data={lineChartData} options={lineOptions} />
+          </div>
         </div>
       </div>
     </div>
