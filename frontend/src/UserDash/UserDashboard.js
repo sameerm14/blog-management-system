@@ -79,9 +79,10 @@ export default function UserDashboard() {
     },
   };
 
-  const lineLabels = posts.map((p) =>
-    new Date(p.created_at).toLocaleDateString(),
-  );
+  const lineLabels = posts.map((p) => {
+    const date = new Date(p.created_at);
+    return isNaN(date.getTime()) ? "Unknown" : date.toLocaleDateString();
+  });
   const lineData = posts.map((p) => p.likes + p.comments);
 
   const lineChartData = {
