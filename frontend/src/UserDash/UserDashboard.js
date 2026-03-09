@@ -80,8 +80,28 @@ export default function UserDashboard() {
   };
 
   const lineLabels = posts.map((p) => {
-    const date = new Date(p.created_at);
-    return isNaN(date.getTime()) ? "Unknown" : date.toLocaleDateString();
+    let date = null;
+
+    // If API sends timestamp (number)
+    if (!isNaN(Number(p.created_at))) {
+      date = new Date(Number(p.created_at));
+    }
+    // If API sends a string
+    else if (typeof p.created_at === "string") {
+      // Fix YYYYMMDD format → YYYY-MM-DD
+      if (/^\d{8}$/.test(p.created_at)) {
+        const str = p.created_at;
+        date = new Date(
+          `${str.slice(0, 4)}-${str.slice(4, 6)}-${str.slice(6, 8)}`,
+        );
+      } else {
+        date = new Date(p.created_at);
+      }
+    }
+
+    return date && !isNaN(date.getTime())
+      ? date.toLocaleDateString()
+      : "Unknown";
   });
   const lineData = posts.map((p) => p.likes + p.comments);
 
