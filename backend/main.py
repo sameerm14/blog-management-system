@@ -346,10 +346,8 @@ def comment_on_post(post_id: int,
     if not post:
         raise HTTPException(404, "Post not found")
 
-   
     plan = get_active_plan(user, db)
 
-    
     comment_count = db.query(models.Comment).filter(
         models.Comment.user_id == user.id
     ).count()
@@ -365,22 +363,26 @@ def comment_on_post(post_id: int,
         user_id=user.id,
         text=comment.text
     )
-
     db.add(new_comment)
+
+    # ✅ Increment views if user hasn't viewed yet
+    existing_view = db.query(models.PostView).filter_by(
+        post_id=post_id, user_id=user.id
+    ).first()
+    if not existing_view:
+        db.add(models.PostView(post_id=post_id, user_id=user.id))
+        post.views = (post.views or 0) + 1
+
     db.commit()
 
     post_owner = db.query(models.User).filter(
         models.User.id == post.author_id
     ).first()
 
-    send_comment_notification(
-        background_tasks,
-        post,
-        post_owner,
-        user
-    )
+    send_comment_notification(background_tasks, post, post_owner, user)
 
-    return {"message": "Comment added"}
+    return {"message": "Comment added", "views": post.views}
+
 
 @app.post("/posts/{post_id}/like")
 def like_post(post_id: int,
@@ -388,13 +390,12 @@ def like_post(post_id: int,
               db: Session = Depends(get_db),
               user = Depends(get_current_user)):
 
-    post = db.query(models.Post).filter(
-        models.Post.id == post_id
-    ).first()
-
+    post = db.query(models.Post).filter(models.Post.id == post_id).first()
     if not post:
         raise HTTPException(404, "Post not found") 
+
     plan = get_active_plan(user, db) 
+
     like_count = db.query(models.Like).filter(
         models.Like.user_id == user.id
     ).count()
@@ -403,29 +404,44 @@ def like_post(post_id: int,
             403,
             "You’ve reached your plan limit. You cannot like more posts."
         )
+
+    # Check if user already liked
+    existing_like = db.query(models.Like).filter_by(
+        post_id=post_id, user_id=user.id
+    ).first()
+    if existing_like:
+        return {"message": "Already liked"}
+
     new_like = models.Like(
         post_id=post_id,
         user_id=user.id
     )
     db.add(new_like)
+
+    # ✅ Increment views if user hasn't viewed yet
+    existing_view = db.query(models.PostView).filter_by(
+        post_id=post_id, user_id=user.id
+    ).first()
+    if not existing_view:
+        db.add(models.PostView(post_id=post_id, user_id=user.id))
+        post.views = (post.views or 0) + 1
+
     db.commit()
    
     total_post_likes = db.query(models.Like).filter(
         models.Like.post_id == post_id
     ).count()
+
     post_owner = db.query(models.User).filter(
         models.User.id == post.author_id
     ).first()
-    send_like_notification(
-        background_tasks,
-        post,
-        post_owner,
-        user
-    )
+
+    send_like_notification(background_tasks, post, post_owner, user)
 
     return {
         "message": "Liked",
-        "total_post_likes": total_post_likes
+        "total_post_likes": total_post_likes,
+        "views": post.views
     }
 
 @app.on_event("startup")
@@ -700,3 +716,64 @@ def get_users(admin_key: str, db: Session = Depends(get_db)):
     users = db.query(models.User).all()
     # Return only safe info
     return [{"id": u.id, "username": u.username, "email": u.email, "mobile": u.mobile} for u in users]
+
+
+@app.get("/user/dashboard")
+def user_dashboard(db: Session = Depends(get_db), user = Depends(get_current_user)):
+
+    # Total posts
+    total_posts = db.query(models.Post).filter(models.Post.author_id == user.id).count()
+
+    # Total comments made by user
+    total_comments_made = db.query(models.Comment).filter(models.Comment.user_id == user.id).count()
+
+    # Total likes received on user's posts
+    user_posts = db.query(models.Post).filter(models.Post.author_id == user.id).all()
+    total_likes_received = sum(
+        db.query(models.Like).filter(models.Like.post_id == post.id).count() for post in user_posts
+    )
+
+    # Optional: total views (if Post has a 'views' column)
+    total_views = sum(post.views if hasattr(post, "views") else 0 for post in user_posts)
+
+    # Likes/comments per post
+    posts_data = []
+    for post in user_posts:
+        likes_count = db.query(models.Like).filter(models.Like.post_id == post.id).count()
+        comments_count = db.query(models.Comment).filter(models.Comment.post_id == post.id).count()
+        posts_data.append({
+            "post_id": post.id,
+            "title": post.title,
+            "likes": likes_count,
+            "comments": comments_count
+        })
+
+    return {
+        "total_posts": total_posts,
+        "total_comments_made": total_comments_made,
+        "total_likes_received": total_likes_received,
+        "total_views": total_views,
+        "posts": posts_data
+    }
+@app.get("/posts/{post_id}")
+def view_post(post_id: int, db: Session = Depends(get_db), user=Depends(get_current_user)):
+    post = db.query(models.Post).filter(models.Post.id == post_id).first()
+    if not post:
+        raise HTTPException(404, "Post not found")
+
+    # Check if this user has already viewed this post
+    existing_view = db.query(models.PostView).filter_by(post_id=post_id, user_id=user.id).first()
+    if not existing_view:
+        new_view = models.PostView(post_id=post_id, user_id=user.id)
+        db.add(new_view)
+        post.views = (post.views or 0) + 1  # increment total views
+        db.commit()
+        db.refresh(post)
+
+    return {
+        "id": post.id,
+        "title": post.title,
+        "content": post.content,
+        "images": post.images.split(",") if post.images else [],
+        "views": post.views
+    }

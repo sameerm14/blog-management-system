@@ -1,14 +1,13 @@
 import React from "react";
 import "./Dashboard.css";
 import { useNavigate } from "react-router-dom";
+import UserDashboard from "../UserDash/UserDashboard";
 
 export default function Dashboard() {
   const navigate = useNavigate();
   const handleLogout = () => {
-    // 1. Remove token
     localStorage.removeItem("token");
 
-    // 2. Redirect to landing page
     navigate("/", { replace: true });
   };
   const handleCreatePost = async () => {
@@ -70,6 +69,7 @@ export default function Dashboard() {
         </button>
       </div>
 
+      <UserDashboard />
       {/* Quick Guide Section */}
 
       <div className="quick-guide">

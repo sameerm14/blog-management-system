@@ -14,6 +14,7 @@ class User(Base):
     mobile = Column(String, nullable=True)
     address = Column(String, nullable=True)
     profile_image = Column(String, nullable=True)
+   
 
 
 class Post(Base):
@@ -26,6 +27,7 @@ class Post(Base):
     created_at = Column(DateTime, default=datetime.utcnow)
     images = Column(Text, nullable=True)  
     user = relationship("User") 
+    views = Column(Integer, default=0)
 
 
 class Comment(Base):
@@ -37,6 +39,12 @@ class Comment(Base):
     text = Column(Text)
     created_at = Column(DateTime, default=datetime.utcnow)
 
+class PostView(Base):
+    __tablename__ = "post_views"
+    id = Column(Integer, primary_key=True)
+    post_id = Column(Integer, ForeignKey("posts.id"))
+    user_id = Column(Integer, ForeignKey("users.id"))
+    created_at = Column(DateTime, default=datetime.utcnow)
 
 class Like(Base):
     __tablename__ = "likes"
