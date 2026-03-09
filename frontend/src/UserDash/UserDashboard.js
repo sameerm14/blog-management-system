@@ -35,10 +35,7 @@ export default function UserDashboard() {
       },
     })
       .then((res) => res.json())
-      .then((data) => {
-        console.log(data.posts.map((p) => p.created_at)); // <-- check raw dates
-        setDashboard(data);
-      })
+      .then((data) => setDashboard(data))
       .catch((err) => console.error(err));
   }, []);
 
@@ -81,33 +78,10 @@ export default function UserDashboard() {
       title: { display: true, text: "Post Engagement" },
     },
   };
-  const lineLabels = posts.map((p) => {
-    let date = null;
 
-    // Case: timestamp in seconds
-    if (typeof p.created_at === "number" && p.created_at < 1000000000000) {
-      date = new Date(p.created_at * 1000); // convert seconds → ms
-    }
-    // Case: timestamp in ms
-    else if (typeof p.created_at === "number") {
-      date = new Date(p.created_at);
-    }
-    // Case: string like "YYYYMMDD"
-    else if (typeof p.created_at === "string" && /^\d{8}$/.test(p.created_at)) {
-      const str = p.created_at;
-      date = new Date(
-        `${str.slice(0, 4)}-${str.slice(4, 6)}-${str.slice(6, 8)}`,
-      );
-    }
-    // Case: ISO string
-    else if (typeof p.created_at === "string") {
-      date = new Date(p.created_at);
-    }
-
-    return date && !isNaN(date.getTime())
-      ? date.toLocaleDateString()
-      : "Unknown";
-  });
+  const lineLabels = posts.map((p) =>
+    new Date(p.created_at).toLocaleDateString(),
+  );
   const lineData = posts.map((p) => p.likes + p.comments);
 
   const lineChartData = {

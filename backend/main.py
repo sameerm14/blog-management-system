@@ -745,7 +745,8 @@ def user_dashboard(db: Session = Depends(get_db), user = Depends(get_current_use
             "post_id": post.id,
             "title": post.title,
             "likes": likes_count,
-            "comments": comments_count
+            "comments": comments_count,
+             "created_at": post.created_at.isoformat()
         })
 
     return {
