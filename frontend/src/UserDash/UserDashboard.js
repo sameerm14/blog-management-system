@@ -78,25 +78,27 @@ export default function UserDashboard() {
       title: { display: true, text: "Post Engagement" },
     },
   };
-
   const lineLabels = posts.map((p) => {
     let date = null;
 
-    // If API sends timestamp (number)
-    if (!isNaN(Number(p.created_at))) {
-      date = new Date(Number(p.created_at));
+    // Case: timestamp in seconds
+    if (typeof p.created_at === "number" && p.created_at < 1000000000000) {
+      date = new Date(p.created_at * 1000); // convert seconds → ms
     }
-    // If API sends a string
+    // Case: timestamp in ms
+    else if (typeof p.created_at === "number") {
+      date = new Date(p.created_at);
+    }
+    // Case: string like "YYYYMMDD"
+    else if (typeof p.created_at === "string" && /^\d{8}$/.test(p.created_at)) {
+      const str = p.created_at;
+      date = new Date(
+        `${str.slice(0, 4)}-${str.slice(4, 6)}-${str.slice(6, 8)}`,
+      );
+    }
+    // Case: ISO string
     else if (typeof p.created_at === "string") {
-      // Fix YYYYMMDD format → YYYY-MM-DD
-      if (/^\d{8}$/.test(p.created_at)) {
-        const str = p.created_at;
-        date = new Date(
-          `${str.slice(0, 4)}-${str.slice(4, 6)}-${str.slice(6, 8)}`,
-        );
-      } else {
-        date = new Date(p.created_at);
-      }
+      date = new Date(p.created_at);
     }
 
     return date && !isNaN(date.getTime())
