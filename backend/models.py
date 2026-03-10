@@ -6,7 +6,7 @@ from datetime import datetime
 from database import Base
 import uuid
 from datetime import datetime, timezone
-import pytz
+
 
 class User(Base):
     __tablename__ = "users"
@@ -94,6 +94,6 @@ class Notification(Base):
     message = Column(String)
     type = Column(String)  # like, comment, subscription
     is_read = Column(Boolean, default=False)
-    created_at = Column(DateTime, default=lambda: datetime.now(pytz.timezone("Asia/Kolkata")))
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
 
     user = relationship("User", backref="notifications")    
