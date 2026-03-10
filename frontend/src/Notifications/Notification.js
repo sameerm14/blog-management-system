@@ -78,7 +78,7 @@ export default function Notification() {
   };
   function formatTime(date) {
     const now = new Date();
-    const created = new Date(date);
+    const created = new Date(date + "Z"); // force treat as UTC
     const diff = Math.floor((now - created) / 1000);
 
     if (diff < 60) return "Just now";
