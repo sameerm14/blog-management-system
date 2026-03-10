@@ -6,6 +6,7 @@ export default function Profile() {
   const navigate = useNavigate();
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [unreadCount, setUnreadCount] = useState(0);
   const [error, setError] = useState("");
   const [editMode, setEditMode] = useState(false);
   const [mobile, setMobile] = useState("");
@@ -17,7 +18,25 @@ export default function Profile() {
     localStorage.removeItem("token");
     navigate("/", { replace: true });
   };
+  const fetchUnreadCount = async () => {
+    try {
+      const token = localStorage.getItem("token");
 
+      const res = await fetch(
+        "https://blog-management-system-y5tx.onrender.com/notifications/unread-count",
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      );
+
+      if (!res.ok) return;
+
+      const data = await res.json();
+      setUnreadCount(data.unread);
+    } catch (err) {
+      console.log(err);
+    }
+  };
   useEffect(() => {
     const fetchProfile = async () => {
       const token = localStorage.getItem("token");
@@ -49,7 +68,7 @@ export default function Profile() {
         setLoading(false);
       }
     };
-
+    fetchUnreadCount();
     fetchProfile();
   }, [navigate]);
 
@@ -100,7 +119,12 @@ export default function Profile() {
           <span onClick={() => navigate("/getposts")}>All Posts</span>
           <span onClick={() => navigate("/plans")}>Plans</span>
           <span onClick={() => navigate("/invoices")}>My Invoices</span>
-          <span onClick={() => navigate("/notifications")}>Notifications</span>
+          <span onClick={() => navigate("/notifications")}>
+            🔔{" "}
+            {unreadCount > 0 && (
+              <span className="notif-count">{unreadCount}</span>
+            )}
+          </span>
           <span onClick={() => navigate("/profile")}>Profile</span>
         </div>
         <button className="logout-btn" onClick={handleLogout}>

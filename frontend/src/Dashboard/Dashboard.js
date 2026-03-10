@@ -1,14 +1,36 @@
 import React from "react";
+import { useEffect, useState } from "react";
 import "./Dashboard.css";
 import { useNavigate } from "react-router-dom";
 import UserDashboard from "../UserDash/UserDashboard";
 
 export default function Dashboard() {
   const navigate = useNavigate();
+  const [unreadCount, setUnreadCount] = useState(0);
   const handleLogout = () => {
     localStorage.removeItem("token");
 
     navigate("/", { replace: true });
+  };
+
+  const fetchUnreadCount = async () => {
+    try {
+      const token = localStorage.getItem("token");
+
+      const res = await fetch(
+        "https://blog-management-system-y5tx.onrender.com/notifications/unread-count",
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      );
+
+      if (!res.ok) return;
+
+      const data = await res.json();
+      setUnreadCount(data.unread);
+    } catch (err) {
+      console.log(err);
+    }
   };
   const handleCreatePost = async () => {
     const token = localStorage.getItem("token");
@@ -32,6 +54,9 @@ export default function Dashboard() {
       console.log(error);
     }
   };
+  useEffect(() => {
+    fetchUnreadCount();
+  }, []);
   return (
     <div className="dashboard">
       {/* Navbar */}
@@ -45,7 +70,12 @@ export default function Dashboard() {
           <span onClick={() => navigate("/getposts")}>All Posts</span>
           <span onClick={() => navigate("/plans")}>Plans</span>
           <span onClick={() => navigate("/invoices")}>My Invoices</span>
-          <span onClick={() => navigate("/notifications")}>Notifications</span>
+          <span onClick={() => navigate("/notifications")}>
+            🔔{" "}
+            {unreadCount > 0 && (
+              <span className="notif-count">{unreadCount}</span>
+            )}
+          </span>
           <span onClick={() => navigate("/profile")}>Profile</span>
         </div>
 

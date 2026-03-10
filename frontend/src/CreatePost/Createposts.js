@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Createposts.css";
 
@@ -11,7 +11,7 @@ export default function Createposts() {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState("");
   const [limitMsg, setLimitMsg] = useState("");
-
+  const [unreadCount, setUnreadCount] = useState(0);
   const handleLogout = () => {
     // 1. Remove token
     localStorage.removeItem("token");
@@ -24,6 +24,25 @@ export default function Createposts() {
     setImages(Array.from(e.target.files)); // allows multiple files
   };
 
+  const fetchUnreadCount = async () => {
+    try {
+      const token = localStorage.getItem("token");
+
+      const res = await fetch(
+        "https://blog-management-system-y5tx.onrender.com/notifications/unread-count",
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      );
+
+      if (!res.ok) return;
+
+      const data = await res.json();
+      setUnreadCount(data.unread);
+    } catch (err) {
+      console.log(err);
+    }
+  };
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
@@ -79,6 +98,9 @@ export default function Createposts() {
       setLoading(false);
     }
   };
+  useEffect(() => {
+    fetchUnreadCount();
+  }, []);
   return (
     <>
       <nav className="navbar">
@@ -90,7 +112,12 @@ export default function Createposts() {
           <span onClick={() => navigate("/getposts")}>All Posts</span>
           <span onClick={() => navigate("/plans")}>Plans</span>
           <span onClick={() => navigate("/invoices")}>My Invoices</span>
-          <span onClick={() => navigate("/notifications")}>Notifications</span>
+          <span onClick={() => navigate("/notifications")}>
+            🔔{" "}
+            {unreadCount > 0 && (
+              <span className="notif-count">{unreadCount}</span>
+            )}
+          </span>
           <span onClick={() => navigate("/profile")}>Profile</span>
         </div>
 

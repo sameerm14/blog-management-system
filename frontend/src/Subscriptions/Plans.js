@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./Plans.css";
 import { useNavigate } from "react-router-dom";
 
@@ -6,13 +6,32 @@ export default function Plans() {
   const navigate = useNavigate();
   const [message, setMessage] = useState(""); // for notification
   const [showMessage, setShowMessage] = useState(false);
-
+  const [unreadCount, setUnreadCount] = useState(0);
   const handleLogout = () => {
     // 1. Remove token
     localStorage.removeItem("token");
 
     // 2. Redirect to landing page
     navigate("/", { replace: true });
+  };
+  const fetchUnreadCount = async () => {
+    try {
+      const token = localStorage.getItem("token");
+
+      const res = await fetch(
+        "https://blog-management-system-y5tx.onrender.com/notifications/unread-count",
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      );
+
+      if (!res.ok) return;
+
+      const data = await res.json();
+      setUnreadCount(data.unread);
+    } catch (err) {
+      console.log(err);
+    }
   };
   const subscribe = async (plan) => {
     const token = localStorage.getItem("token");
@@ -51,6 +70,9 @@ export default function Plans() {
       setShowMessage(true);
     }
   };
+  useEffect(() => {
+    fetchUnreadCount();
+  }, []);
 
   return (
     <>
@@ -65,7 +87,12 @@ export default function Plans() {
           <span onClick={() => navigate("/getposts")}>All Posts</span>
           <span onClick={() => navigate("/plans")}>Plans</span>
           <span onClick={() => navigate("/invoices")}>My Invoices</span>
-          <span onClick={() => navigate("/notifications")}>Notifications</span>
+          <span onClick={() => navigate("/notifications")}>
+            🔔{" "}
+            {unreadCount > 0 && (
+              <span className="notif-count">{unreadCount}</span>
+            )}
+          </span>
           <span onClick={() => navigate("/profile")}>Profile</span>
         </div>
 

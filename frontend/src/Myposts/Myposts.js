@@ -6,6 +6,7 @@ export default function Myposts() {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [unreadCount, setUnreadCount] = useState(0);
   const [popup, setPopup] = useState({
     show: false,
     message: "",
@@ -18,7 +19,25 @@ export default function Myposts() {
     localStorage.removeItem("token");
     navigate("/", { replace: true });
   };
+  const fetchUnreadCount = async () => {
+    try {
+      const token = localStorage.getItem("token");
 
+      const res = await fetch(
+        "https://blog-management-system-y5tx.onrender.com/notifications/unread-count",
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      );
+
+      if (!res.ok) return;
+
+      const data = await res.json();
+      setUnreadCount(data.unread);
+    } catch (err) {
+      console.log(err);
+    }
+  };
   // Fetch my posts
   useEffect(() => {
     const fetchMyPosts = async () => {
@@ -42,6 +61,7 @@ export default function Myposts() {
       }
     };
     fetchMyPosts();
+    fetchUnreadCount();
   }, []);
 
   // Delete a post
@@ -89,7 +109,12 @@ export default function Myposts() {
           <span onClick={() => navigate("/getposts")}>All Posts</span>
           <span onClick={() => navigate("/plans")}>Plans</span>
           <span onClick={() => navigate("/invoices")}>My Invoices</span>
-          <span onClick={() => navigate("/notifications")}>Notifications</span>
+          <span onClick={() => navigate("/notifications")}>
+            🔔{" "}
+            {unreadCount > 0 && (
+              <span className="notif-count">{unreadCount}</span>
+            )}
+          </span>
           <span onClick={() => navigate("/profile")}>Profile</span>
         </div>
         <button className="logout-btn" onClick={handleLogout}>
