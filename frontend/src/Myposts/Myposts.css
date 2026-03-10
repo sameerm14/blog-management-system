@@ -8,7 +8,6 @@
   padding: 0 15px;
 }
 
-/* Each post card */
 .post-card {
   background-color: #fff;
   border: 1px solid #ddd;
@@ -19,8 +18,7 @@
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  height: 350px; /* slightly taller to fit bigger images */
-  overflow: hidden;
+  height: auto;
 }
 /* Hover effect */
 .post-card:hover {
@@ -45,23 +43,19 @@
   margin-bottom: 20px;
 }
 
-/* Images wrapper */
-
 .post-images {
   display: flex;
+  flex-wrap: wrap;
   gap: 12px;
-  overflow-x: auto; /* horizontal scroll if images exceed width */
-  max-height: 180px; /* bigger image area */
-  padding-bottom: 5px;
   margin-top: 10px;
 }
 
 .post-images img {
-  height: 160px; /* bigger images */
-  width: auto;
+  width: 100%;
+  max-width: 250px;
+  height: auto;
   border-radius: 8px;
   object-fit: cover;
-  flex-shrink: 0; /* prevent images from shrinking */
 }
 
 /* Image hover effect */
