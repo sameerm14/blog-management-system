@@ -76,7 +76,24 @@ export default function Notification() {
       console.log(err);
     }
   };
+  function formatTime(date) {
+    const now = new Date();
+    const diff = Math.floor((now - new Date(date)) / 1000);
 
+    if (diff < 60) return "Just now";
+
+    if (diff < 3600) {
+      const m = Math.floor(diff / 60);
+      return m + (m === 1 ? " minute ago" : " minutes ago");
+    }
+
+    if (diff < 86400) {
+      const h = Math.floor(diff / 3600);
+      return h + (h === 1 ? " hour ago" : " hours ago");
+    }
+
+    return new Date(date).toLocaleDateString("en-IN");
+  }
   useEffect(() => {
     fetchNotifications();
     fetchUnreadCount();
@@ -127,7 +144,7 @@ export default function Notification() {
                 onClick={() => markAsRead(n.id)}
               >
                 <p>{n.message}</p>
-                <small>{new Date(n.created_at).toLocaleString()}</small>
+                <small>{formatTime(n.created_at)}</small>
               </div>
             ))
           )}

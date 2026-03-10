@@ -92,6 +92,6 @@ class Notification(Base):
     message = Column(String)
     type = Column(String)  # like, comment, subscription
     is_read = Column(Boolean, default=False)
-    created_at = Column(DateTime, default=datetime.utcnow)
+    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
 
-    user = relationship("User")
+    user = relationship("User", backref="notifications")    
