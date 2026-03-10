@@ -79,19 +79,13 @@ export default function Notification() {
   function formatTime(date) {
     const now = new Date();
     const created = new Date(date);
-
-    // convert UTC to local browser time
-    const localCreated = new Date(
-      created.getTime() + created.getTimezoneOffset() * 60000,
-    );
-
-    const diff = Math.floor((now - localCreated) / 1000);
+    const diff = Math.floor((now - created) / 1000);
 
     if (diff < 60) return "Just now";
     if (diff < 3600) return Math.floor(diff / 60) + " minutes ago";
     if (diff < 86400) return Math.floor(diff / 3600) + " hours ago";
 
-    return localCreated.toLocaleDateString("en-IN");
+    return created.toLocaleDateString("en-IN");
   }
   useEffect(() => {
     fetchNotifications();
