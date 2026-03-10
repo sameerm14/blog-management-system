@@ -87,8 +87,11 @@ export default function Plans() {
           <span onClick={() => navigate("/getposts")}>All Posts</span>
           <span onClick={() => navigate("/plans")}>Plans</span>
           <span onClick={() => navigate("/invoices")}>My Invoices</span>
-          <span onClick={() => navigate("/notifications")}>
-            🔔{" "}
+          <span
+            className="notification-icon"
+            onClick={() => navigate("/notifications")}
+          >
+            🔔
             {unreadCount > 0 && (
               <span className="notif-count">{unreadCount}</span>
             )}

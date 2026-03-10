@@ -200,8 +200,8 @@
 }
 .notif-count {
   position: absolute;
-  top: -6px;
-  right: -2px; /* move badge more to the right */
+  top: 2px; /* change from -6px */
+  right: -2px;
 
   background: red;
   color: white;
@@ -217,4 +217,8 @@
   justify-content: center;
 
   border: 2px solid white;
+}
+.navbar {
+  position: relative;
+  overflow: visible;
 }
