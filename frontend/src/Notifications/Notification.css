@@ -11,71 +11,56 @@
 
 .notifications-container {
   width: 100%;
-  max-width: 1000px;
-  margin: 80px auto;
+  max-width: 900px;
+  margin: 70px auto;
   padding: 0 15px;
   display: flex;
   flex-direction: column;
-  gap: 18px;
-}
-
-/* TITLE */
-
-.notifications-container h2 {
-  font-size: 26px;
-  font-weight: 700;
-  color: #1f2937;
-  text-align: center;
+  gap: 16px;
 }
 
 /* CARD */
 
 .notification-card {
-  background: #fff;
-  padding: 20px;
+  background: #ffffff;
+  padding: 16px 18px;
   border-radius: 10px;
-  border: 1px solid #ececec;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
-  transition: 0.25s;
-  width: 100%;
+  border: 1px solid #e6e6e6;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  cursor: pointer;
+  transition: all 0.25s ease;
 }
 
 .notification-card:hover {
   transform: translateY(-3px);
 }
 
-/* POST TITLE */
+/* MESSAGE */
 
-.notification-card h3 {
-  font-size: 18px;
-  color: #111827;
+.notification-card p {
+  font-size: 15px;
+  color: #1f2937;
   margin-bottom: 6px;
 }
 
-/* INFO */
+/* TIME */
 
-.notification-card p {
-  font-size: 14px;
+.notification-card small {
+  font-size: 12px;
   color: #6b7280;
-  margin-bottom: 12px;
 }
 
-/* COMMENTS */
+/* UNREAD STYLE */
 
-.notification-card ul {
-  list-style: none;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
+.notification-card.unread {
+  border-left: 4px solid #4a6cf7;
+  background: #eef3ff;
 }
 
-.notification-card li {
-  background: #f3f4f6;
-  padding: 8px 12px;
-  border-radius: 6px;
-  font-size: 13px;
-  color: #374151;
+/* READ STYLE */
+
+.notification-card.read {
+  opacity: 0.75;
 }
 
 /* EMPTY */
@@ -84,25 +69,20 @@
   text-align: center;
   font-size: 15px;
   color: #6b7280;
-  margin-top: 100px;
+  margin-top: 120px;
 }
 
-/* MOBILE */
+/* NAVBAR BELL BADGE */
 
-@media (max-width: 768px) {
-  .notifications-container {
-    width: 92%;
-    margin: 60px auto;
-  }
-
-  .notification-card {
-    padding: 16px;
-  }
-
-  .notification-card h3 {
-    font-size: 16px;
-  }
+.notif-count {
+  background: #ff3b3b;
+  color: white;
+  font-size: 11px;
+  padding: 2px 6px;
+  border-radius: 50%;
+  margin-left: 5px;
 }
+
 /* MOBILE RESPONSIVE */
 
 @media (max-width: 768px) {
@@ -113,32 +93,19 @@
   }
 
   .notification-card {
-    width: 100%;
-  }
-
-  .notification-card h3 {
-    font-size: 16px;
+    padding: 14px;
   }
 
   .notification-card p {
-    font-size: 13px;
+    font-size: 14px;
   }
 
-  .notification-card ul {
-    gap: 5px;
-  }
-
-  .notification-card li {
-    font-size: 12px;
-    padding: 7px 10px;
-  }
-
-  .notifications-container h2 {
-    font-size: 22px;
+  .notification-card small {
+    font-size: 11px;
   }
 
   .no-notifications {
     font-size: 14px;
-    margin-top: 80px;
+    margin-top: 90px;
   }
 }

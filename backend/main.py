@@ -364,8 +364,16 @@ def comment_on_post(post_id: int,
         text=comment.text
     )
     db.add(new_comment)
+    notification = models.Notification(
+    user_id=post.author_id,
+    message=f"{user.username} commented on your post '{post.title}'",
+    type="comment",
+    is_read=False
+)
 
-    # ✅ Increment views if user hasn't viewed yet
+    db.add(notification)
+
+   
     existing_view = db.query(models.PostView).filter_by(
         post_id=post_id, user_id=user.id
     ).first()
@@ -417,8 +425,16 @@ def like_post(post_id: int,
         user_id=user.id
     )
     db.add(new_like)
+    notification = models.Notification(
+    user_id=post.author_id,
+    message=f"{user.username} liked your post '{post.title}'",
+    type="like",
+    is_read=False
+)
 
-    # ✅ Increment views if user hasn't viewed yet
+    db.add(notification)
+
+
     existing_view = db.query(models.PostView).filter_by(
         post_id=post_id, user_id=user.id
     ).first()
@@ -595,6 +611,7 @@ def generate_invoice(user, plan, start_date, end_date):
     doc.build(elements)
 
     return file_path, transaction_id
+
 @app.get("/dashboard/notifications")
 def get_post_interactions(
     db: Session = Depends(get_db),
@@ -680,6 +697,14 @@ def subscribe(plan_name: str,
     )
 
     db.add(billing)
+    notification = models.Notification(
+    user_id=user.id,
+    message=f"Your {plan.name} subscription is activated.",
+    type="subscription",
+    is_read=False
+)
+
+    db.add(notification)
     db.commit()
 
     return {
@@ -778,3 +803,63 @@ def view_post(post_id: int, db: Session = Depends(get_db), user=Depends(get_curr
         "images": post.images.split(",") if post.images else [],
         "views": post.views
     }
+@app.get("/notifications", response_model=List[schemas.NotificationOut])
+def get_notifications(
+    db: Session = Depends(get_db),
+    user = Depends(get_current_user)
+):
+
+    notifications = db.query(models.Notification)\
+        .filter(models.Notification.user_id == user.id)\
+        .order_by(models.Notification.created_at.desc())\
+        .all()
+
+    return notifications
+
+
+@app.put("/notifications/{notification_id}/read")
+def mark_notification_read(
+    notification_id: int,
+    db: Session = Depends(get_db),
+    user = Depends(get_current_user)
+):
+
+    notification = db.query(models.Notification).filter(
+        models.Notification.id == notification_id,
+        models.Notification.user_id == user.id
+    ).first()
+
+    if not notification:
+        raise HTTPException(404, "Notification not found")
+
+    notification.is_read = True
+    db.commit()
+
+    return {"message": "Notification marked as read"}
+
+@app.put("/notifications/read-all")
+def mark_all_read(
+    db: Session = Depends(get_db),
+    user = Depends(get_current_user)
+):
+
+    db.query(models.Notification).filter(
+        models.Notification.user_id == user.id
+    ).update({"is_read": True})
+
+    db.commit()
+
+    return {"message": "All notifications marked as read"}
+
+@app.get("/notifications/unread-count")
+def unread_notifications(
+    db: Session = Depends(get_db),
+    user = Depends(get_current_user)
+):
+
+    count = db.query(models.Notification).filter(
+        models.Notification.user_id == user.id,
+        models.Notification.is_read == False
+    ).count()
+
+    return {"unread": count}

@@ -1,45 +1,90 @@
-import React, { useState } from "react";
-import { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Notification.css";
 
 export default function Notification() {
-  const [interactions, setInteractions] = useState([]);
+  const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [unreadCount, setUnreadCount] = useState(0);
 
   const navigate = useNavigate();
+
   const handleLogout = () => {
     localStorage.removeItem("token");
     navigate("/", { replace: true });
   };
-  const fetchInteractions = async () => {
+
+  const fetchNotifications = async () => {
     setLoading(true);
     setError("");
+
     try {
       const token = localStorage.getItem("token");
+
       const res = await fetch(
-        "https://blog-management-system-y5tx.onrender.com/dashboard/notifications",
+        "https://blog-management-system-y5tx.onrender.com/notifications",
         {
           headers: { Authorization: `Bearer ${token}` },
         },
       );
-      if (!res.ok) throw new Error("Failed to fetch interactions");
+
+      if (!res.ok) throw new Error("Failed to fetch notifications");
+
       const data = await res.json();
-      setInteractions(data);
+      setNotifications(data);
     } catch (err) {
       setError(err.message);
     } finally {
       setLoading(false);
     }
   };
+  const fetchUnreadCount = async () => {
+    try {
+      const token = localStorage.getItem("token");
+
+      const res = await fetch(
+        "https://blog-management-system-y5tx.onrender.com/notifications/unread-count",
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      );
+
+      if (!res.ok) return;
+
+      const data = await res.json();
+      setUnreadCount(data.unread);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  const markAsRead = async (id) => {
+    try {
+      const token = localStorage.getItem("token");
+
+      await fetch(
+        `https://blog-management-system-y5tx.onrender.com/notifications/${id}/read`,
+        {
+          method: "PUT",
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      );
+
+      fetchNotifications();
+      fetchUnreadCount();
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   useEffect(() => {
-    fetchInteractions();
+    fetchNotifications();
+    fetchUnreadCount();
   }, []);
 
-  if (loading) return <p>Loading interactions...</p>;
+  if (loading) return <p>Loading notifications...</p>;
   if (error) return <p style={{ color: "red" }}>{error}</p>;
+
   return (
     <>
       <div className="notification-page">
@@ -53,7 +98,10 @@ export default function Notification() {
             <span onClick={() => navigate("/plans")}>Plans</span>
             <span onClick={() => navigate("/invoices")}>My Invoices</span>
             <span onClick={() => navigate("/notifications")}>
-              Notifications
+              🔔{" "}
+              {unreadCount > 0 && (
+                <span className="notif-count">{unreadCount}</span>
+              )}
             </span>
             <span onClick={() => navigate("/profile")}>Profile</span>
           </div>
@@ -62,38 +110,25 @@ export default function Notification() {
             Logout
           </button>
         </nav>
+
         <div className="notifications-container">
-          {interactions.length === 0 ? (
+          {notifications.length === 0 ? (
             <p className="no-notifications">
-              You don’t have any notifications yet. When someone likes or
-              comments on your posts, they will appear here.
+              You don’t have any notifications yet.
             </p>
           ) : (
-            interactions.map((post) => (
-              <div key={post.post_id} className="notification-card">
-                <h3>{post.post_title}</h3>
-                <p>
-                  Likes: {post.likes.length}
-                  {post.likes.length > 0 &&
-                    ` - ${post.likes.map((l) => l.user_name).join(", ")}`}
-                </p>
-                {post.comments.length > 0 && (
-                  <div>
-                    <strong>Comments:</strong>
-                    <ul>
-                      {post.comments.map((c, idx) => (
-                        <li key={idx}>
-                          <strong>{`by ${c.user_name}`}:</strong> {c.text}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
+            notifications.map((n) => (
+              <div
+                key={n.id}
+                className={`notification-card ${n.is_read ? "read" : "unread"}`}
+                onClick={() => markAsRead(n.id)}
+              >
+                <p>{n.message}</p>
+                <small>{new Date(n.created_at).toLocaleString()}</small>
               </div>
             ))
           )}
         </div>
-        {/* Footer */}
 
         <footer className="dashboard-footer">
           <div className="footer-content">

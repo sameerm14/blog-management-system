@@ -58,16 +58,18 @@
 
 /* Individual images */
 .post-images img {
-  width: calc(50% - 6px); /* two images per row */
-  max-height: 180px;
-  object-fit: cover;
+  width: calc(50% - 6px);
+  height: auto; /* allow natural height */
+  object-fit: contain; /* prevent cropping */
   border-radius: 12px;
   transition:
     transform 0.3s ease,
     box-shadow 0.3s ease;
   cursor: pointer;
 }
-
+.post-card {
+  overflow: hidden;
+}
 /* Image hover effect */
 .post-images img:hover {
   transform: scale(1.08) rotate(1deg);
