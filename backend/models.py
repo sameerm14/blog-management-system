@@ -5,6 +5,7 @@ from sqlalchemy.orm import relationship
 from datetime import datetime
 from database import Base
 import uuid
+from datetime import datetime, timezone
 
 class User(Base):
     __tablename__ = "users"
@@ -92,6 +93,6 @@ class Notification(Base):
     message = Column(String)
     type = Column(String)  # like, comment, subscription
     is_read = Column(Boolean, default=False)
-    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+    created_at = Column(DateTime, default=lambda: datetime.now())
 
     user = relationship("User", backref="notifications")    
