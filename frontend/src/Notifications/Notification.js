@@ -78,21 +78,20 @@ export default function Notification() {
   };
   function formatTime(date) {
     const now = new Date();
-    const diff = Math.floor((now - new Date(date)) / 1000);
+    const created = new Date(date);
+
+    // convert UTC to local browser time
+    const localCreated = new Date(
+      created.getTime() + created.getTimezoneOffset() * 60000,
+    );
+
+    const diff = Math.floor((now - localCreated) / 1000);
 
     if (diff < 60) return "Just now";
+    if (diff < 3600) return Math.floor(diff / 60) + " minutes ago";
+    if (diff < 86400) return Math.floor(diff / 3600) + " hours ago";
 
-    if (diff < 3600) {
-      const m = Math.floor(diff / 60);
-      return m + (m === 1 ? " minute ago" : " minutes ago");
-    }
-
-    if (diff < 86400) {
-      const h = Math.floor(diff / 3600);
-      return h + (h === 1 ? " hour ago" : " hours ago");
-    }
-
-    return new Date(date).toLocaleDateString("en-IN");
+    return localCreated.toLocaleDateString("en-IN");
   }
   useEffect(() => {
     fetchNotifications();
