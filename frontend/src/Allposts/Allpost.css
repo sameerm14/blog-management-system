@@ -208,11 +208,10 @@
   font-size: 28px;
   cursor: pointer;
 }
-
 .notif-count {
   position: absolute;
   top: -6px;
-  right: -6px;
+  right: -2px; /* move badge more to the right */
 
   background: red;
   color: white;
@@ -227,5 +226,5 @@
   align-items: center;
   justify-content: center;
 
-  border: 2px solid white; /* makes badge clean */
+  border: 2px solid white;
 }
