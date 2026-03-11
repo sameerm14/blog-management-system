@@ -937,6 +937,7 @@ def get_ai_reply(message: str):
     # Default
     else:
         return (
+            "Hey there! I'm your AI assistant for the Blog Management System.\n"
             "I can help you with:\n"
             "• Creating posts\n"
             "• Editing or deleting posts\n"
