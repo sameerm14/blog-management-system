@@ -905,7 +905,7 @@ def get_ai_reply(message: str):
             "• Premium\n"
             "• Pro\n\n"
             "Each plan provides different limits for posts, likes, and images.\n\n"
-            "Open: /subscription"
+            "Open: /plans"
         )
 
     # Billing
