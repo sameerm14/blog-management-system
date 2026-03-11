@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import "./Dashboard.css";
 import { useNavigate } from "react-router-dom";
 import UserDashboard from "../UserDash/UserDashboard";
+import AIChat from "../Ai/AIChat";
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -157,6 +158,7 @@ export default function Dashboard() {
           </div>
         </div>
       </footer>
+      <AIChat />
     </div>
   );
 }

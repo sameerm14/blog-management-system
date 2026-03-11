@@ -863,3 +863,51 @@ def unread_notifications(
     ).count()
 
     return {"unread": count}
+
+def get_ai_reply(message: str):
+
+    msg = message.lower()
+
+    if "create post" in msg:
+        return "To create a post, go to the Create Post section and enter title, content, and images."
+
+    elif "edit post" in msg:
+        return "You can edit your post from the My Posts page."
+
+    elif "delete post" in msg:
+        return "Go to My Posts and click delete on the post you want to remove."
+
+    elif "subscription" in msg:
+        return "You can subscribe to Basic, Premium, or Pro plans from the subscription page."
+
+    elif "billing" in msg:
+        return "Billing invoices are available in the My Invoices section."
+
+    elif "dashboard" in msg:
+        return "The dashboard shows your total posts, likes, comments, and views."
+
+    elif "profile" in msg:
+        return "You can update your profile from the Profile page."
+
+    else:
+        return "Sorry, I couldn't understand. Please ask about posts, subscriptions, billing, or dashboard."
+    
+@app.post("/api/ai-support", response_model=schemas.AIChatResponse)
+def ai_support(
+    request: schemas.AIChatRequest,
+    db: Session = Depends(get_db),
+    user = Depends(get_current_user)
+):
+
+    reply = get_ai_reply(request.message)
+
+    chat = models.AIChat(
+        user_id=user.id,
+        question=request.message,
+        answer=reply
+    )
+
+    db.add(chat)
+    db.commit()
+
+    return {"reply": reply}

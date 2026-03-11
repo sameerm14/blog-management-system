@@ -43,3 +43,10 @@ class NotificationOut(BaseModel):
 
     class Config:
         from_attributes = True
+
+class AIChatRequest(BaseModel):
+    message: str
+
+
+class AIChatResponse(BaseModel):
+    reply: str
