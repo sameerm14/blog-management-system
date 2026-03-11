@@ -6,7 +6,8 @@ from datetime import datetime
 from database import Base
 import uuid
 from datetime import datetime, timezone
-
+from zoneinfo import ZoneInfo
+IST = ZoneInfo("Asia/Kolkata")
 
 class User(Base):
     __tablename__ = "users"
@@ -120,4 +121,4 @@ class ChatActivity(Base):
 
     ai_response = Column(Text)
 
-    timestamp = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    timestamp = Column(DateTime, default=lambda: datetime.now(ZoneInfo("Asia/Kolkata")))
