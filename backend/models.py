@@ -97,6 +97,7 @@ class Notification(Base):
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
 
     user = relationship("User", backref="notifications")    
+
 class AIChat(Base):
     __tablename__ = "ai_chats"
 
@@ -104,7 +105,7 @@ class AIChat(Base):
     user_id = Column(Integer, ForeignKey("users.id"))
     question = Column(Text)
     answer = Column(Text)
-    created_at = Column(DateTime, default=datetime.utcnow)
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
 
     user = relationship("User")
 
@@ -119,4 +120,4 @@ class ChatActivity(Base):
 
     ai_response = Column(Text)
 
-    timestamp = Column(DateTime, default=datetime.utcnow)
+    timestamp = Column(DateTime, default=lambda: datetime.now(timezone.utc))
