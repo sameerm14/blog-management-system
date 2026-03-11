@@ -90,3 +90,13 @@
     font-size: 14px;
   }
 }
+.chat-link {
+  margin-top: 5px;
+  background: #4caf50;
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  cursor: pointer;
+  border-radius: 4px;
+  font-size: 13px;
+}

@@ -1,12 +1,13 @@
 import React from "react";
 import { useState } from "react";
 import "./AIChat.css";
+import { useNavigate } from "react-router-dom";
 
 export default function AIChat() {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [open, setOpen] = useState(false);
-
+  const navigate = useNavigate();
   const sendMessage = async () => {
     if (!input.trim()) return;
 
@@ -53,7 +54,24 @@ export default function AIChat() {
           <div className="chat-body">
             {messages.map((msg, i) => (
               <div key={i} className={msg.sender}>
-                {msg.text}
+                {msg.text.split("\n").map((line, index) => {
+                  if (line.startsWith("Open:")) {
+                    const path = line.replace("Open:", "").trim();
+
+                    return (
+                      <div key={index}>
+                        <button
+                          className="chat-link"
+                          onClick={() => navigate(path)}
+                        >
+                          Go to page
+                        </button>
+                      </div>
+                    );
+                  }
+
+                  return <div key={index}>{line}</div>;
+                })}
               </div>
             ))}
           </div>
