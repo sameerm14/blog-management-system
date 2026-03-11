@@ -60,7 +60,8 @@ export default function AIChat() {
   return (
     <>
       <div className="chat-button" onClick={() => setOpen(!open)}>
-        💬
+        <span className="chat-icon">💬</span>
+        <span className="chat-text">Need Help?</span>
       </div>
 
       {open && (
