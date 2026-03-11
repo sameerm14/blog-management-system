@@ -909,5 +909,17 @@ def ai_support(
 
     db.add(chat)
     db.commit()
+    db.refresh(chat)
 
     return {"reply": reply}
+
+@app.get("/admin/ai-chats")
+def get_ai_chats(
+    db: Session = Depends(get_db)
+):
+
+    chats = db.query(models.AIChat).order_by(
+        models.AIChat.created_at.desc()
+    ).all()
+
+    return chats

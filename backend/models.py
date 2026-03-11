@@ -107,3 +107,16 @@ class AIChat(Base):
     created_at = Column(DateTime, default=datetime.utcnow)
 
     user = relationship("User")
+
+class ChatActivity(Base):
+    __tablename__ = "chat_activity"
+
+    id = Column(Integer, primary_key=True, index=True)
+
+    user_id = Column(Integer, ForeignKey("users.id"))
+
+    question = Column(Text)
+
+    ai_response = Column(Text)
+
+    timestamp = Column(DateTime, default=datetime.utcnow)
