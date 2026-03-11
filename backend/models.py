@@ -106,7 +106,7 @@ class AIChat(Base):
     user_id = Column(Integer, ForeignKey("users.id"))
     question = Column(Text)
     answer = Column(Text)
-    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    created_at = Column(DateTime, default=lambda: datetime.now(ZoneInfo("Asia/Kolkata")))
 
     user = relationship("User")
 
