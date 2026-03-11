@@ -863,34 +863,89 @@ def unread_notifications(
     ).count()
 
     return {"unread": count}
-
 def get_ai_reply(message: str):
 
     msg = message.lower()
 
-    if "create post" in msg:
-        return "To create a post, go to the Create Post section and enter title, content, and images."
+    # Create Post
+    if "create post" in msg or "new post" in msg or "add post" in msg:
+        return (
+            "To create a post:\n"
+            "1. Go to the Create Post page.\n"
+            "2. Enter your title and content.\n"
+            "3. Upload images if needed.\n"
+            "4. Click Publish.\n\n"
+            "Open: /create-post"
+        )
 
-    elif "edit post" in msg:
-        return "You can edit your post from the My Posts page."
+    # Edit Post
+    elif "edit post" in msg or "update post" in msg:
+        return (
+            "To edit a post:\n"
+            "1. Go to My Posts.\n"
+            "2. Select the post you want to edit.\n"
+            "3. Click Edit and update your content.\n\n"
+            "Open: /my-posts"
+        )
 
-    elif "delete post" in msg:
-        return "Go to My Posts and click delete on the post you want to remove."
+    # Delete Post
+    elif "delete post" in msg or "remove post" in msg:
+        return (
+            "To delete a post:\n"
+            "1. Go to My Posts.\n"
+            "2. Click Delete on the post you want to remove.\n\n"
+            "Open: /my-posts"
+        )
 
-    elif "subscription" in msg:
-        return "You can subscribe to Basic, Premium, or Pro plans from the subscription page."
+    # Subscription
+    elif "subscription" in msg or "plan" in msg:
+        return (
+            "Our platform offers 3 subscription plans:\n"
+            "• Basic\n"
+            "• Premium\n"
+            "• Pro\n\n"
+            "Each plan provides different limits for posts, likes, and images.\n\n"
+            "Open: /subscription"
+        )
 
-    elif "billing" in msg:
-        return "Billing invoices are available in the My Invoices section."
+    # Billing
+    elif "billing" in msg or "invoice" in msg or "payment" in msg:
+        return (
+            "You can view your billing history and invoices in the My Invoices section.\n\n"
+            "Open: /invoices"
+        )
 
-    elif "dashboard" in msg:
-        return "The dashboard shows your total posts, likes, comments, and views."
+    # Dashboard
+    elif "dashboard" in msg or "analytics" in msg:
+        return (
+            "Your dashboard shows:\n"
+            "• Total posts\n"
+            "• Total likes\n"
+            "• Total comments\n"
+            "• Total views\n\n"
+            "Open: /dashboard"
+        )
 
-    elif "profile" in msg:
-        return "You can update your profile from the Profile page."
+    # Profile
+    elif "profile" in msg or "account" in msg:
+        return (
+            "You can update your profile information such as username, mobile, "
+            "address, and profile picture in the Profile section.\n\n"
+            "Open: /profile"
+        )
 
+    # Default
     else:
-        return "Sorry, I couldn't understand. Please ask about posts, subscriptions, billing, or dashboard."
+        return (
+            "I can help you with:\n"
+            "• Creating posts\n"
+            "• Editing or deleting posts\n"
+            "• Subscription plans\n"
+            "• Billing and invoices\n"
+            "• Profile management\n"
+            "• Dashboard analytics\n\n"
+            "Please ask something like: 'How to create a post?'"
+        )
     
 @app.post("/api/ai-support", response_model=schemas.AIChatResponse)
 def ai_support(
