@@ -1,6 +1,6 @@
 import React from "react";
 import { useEffect, useState } from "react";
-
+import AIChat from "../Ai/AIChat";
 import "./Myinvoice.css";
 import { useNavigate } from "react-router-dom";
 export default function Myinvoice() {
@@ -122,6 +122,7 @@ export default function Myinvoice() {
           </div>
         </div>
       </footer>
+      <AIChat />
     </>
   );
 }

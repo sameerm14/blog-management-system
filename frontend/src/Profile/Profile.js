@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./Profile.css";
 import { useNavigate } from "react-router-dom";
+import AIChat from "../Ai/AIChat";
 
 export default function Profile() {
   const navigate = useNavigate();
@@ -241,6 +242,7 @@ export default function Profile() {
           </div>
         </div>
       </footer>
+      <AIChat />
     </>
   );
 }

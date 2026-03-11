@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Notification.css";
+import AIChat from "../Ai/AIChat";
 
 export default function Notification() {
   const [notifications, setNotifications] = useState([]);
@@ -162,6 +163,7 @@ export default function Notification() {
             </div>
           </div>
         </footer>
+        <AIChat />
       </div>
     </>
   );

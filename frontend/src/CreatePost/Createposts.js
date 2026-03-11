@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Createposts.css";
+import AIChat from "../Ai/AIChat";
 
 export default function Createposts() {
   const navigate = useNavigate();
@@ -189,6 +190,7 @@ export default function Createposts() {
           </div>
         </div>
       </footer>
+      <AIChat />
     </>
   );
 }

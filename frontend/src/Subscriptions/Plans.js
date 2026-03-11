@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./Plans.css";
 import { useNavigate } from "react-router-dom";
+import AIChat from "../Ai/AIChat";
 
 export default function Plans() {
   const navigate = useNavigate();
@@ -173,6 +174,7 @@ export default function Plans() {
           </div>
         </div>
       </footer>
+      <AIChat />
     </>
   );
 }
