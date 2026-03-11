@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Allpost.css";
+import AIChat from "../Ai/AIChat";
 
 export default function AllPost() {
   const [posts, setPosts] = useState([]);
@@ -285,6 +286,8 @@ export default function AllPost() {
           </div>
         </div>
       </footer>
+
+      <AIChat />
     </>
   );
 }
