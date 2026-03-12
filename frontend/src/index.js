@@ -11,8 +11,7 @@ root.render(
     domain="dev-cv23bl242ncm1zbz.us.auth0.com"
     clientId="1qXkVvLPS5mz5GBjS6pp7b9k5VrXpMI9"
     authorizationParams={{
-      redirect_uri: window.location.origin + "/dashboard",
-      audience: "https://dev-cv23bl242ncm1zbz.us.auth0.com/api/v2/",
+      redirect_uri: window.location.origin,
     }}
   >
     <App />
