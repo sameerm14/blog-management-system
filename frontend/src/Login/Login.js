@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "./Login.css";
 import { useNavigate } from "react-router-dom";
-import Navbarl from "../Myposts/Navbarlandingpage/Navbarl";
+import Navbarl from "../Navbarlandingpage/Navbarl";
 import SocialLogin from "../SocialLinks/SocialLogin";
 
 export default function Login() {

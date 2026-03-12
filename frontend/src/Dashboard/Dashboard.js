@@ -4,14 +4,20 @@ import "./Dashboard.css";
 import { useNavigate } from "react-router-dom";
 import UserDashboard from "../UserDash/UserDashboard";
 import AIChat from "../Ai/AIChat";
+import { useAuth0 } from "@auth0/auth0-react";
 
 export default function Dashboard() {
   const navigate = useNavigate();
   const [unreadCount, setUnreadCount] = useState(0);
+  const { logout } = useAuth0();
   const handleLogout = () => {
     localStorage.removeItem("token");
 
-    navigate("/", { replace: true });
+    logout({
+      logoutParams: {
+        returnTo: window.location.origin,
+      },
+    });
   };
 
   const fetchUnreadCount = async () => {

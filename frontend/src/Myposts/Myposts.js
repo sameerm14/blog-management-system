@@ -2,12 +2,14 @@ import React, { useEffect, useState } from "react";
 import "./Myposts.css";
 import { useNavigate } from "react-router-dom";
 import AIChat from "../Ai/AIChat";
+import { useAuth0 } from "@auth0/auth0-react";
 
 export default function Myposts() {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [unreadCount, setUnreadCount] = useState(0);
+  const { logout } = useAuth0();
   const [popup, setPopup] = useState({
     show: false,
     message: "",
@@ -18,7 +20,12 @@ export default function Myposts() {
 
   const handleLogout = () => {
     localStorage.removeItem("token");
-    navigate("/", { replace: true });
+
+    logout({
+      logoutParams: {
+        returnTo: window.location.origin,
+      },
+    });
   };
   const fetchUnreadCount = async () => {
     try {

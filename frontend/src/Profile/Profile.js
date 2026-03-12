@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./Profile.css";
 import { useNavigate } from "react-router-dom";
 import AIChat from "../Ai/AIChat";
+import { useAuth0 } from "@auth0/auth0-react";
 
 export default function Profile() {
   const navigate = useNavigate();
@@ -14,10 +15,16 @@ export default function Profile() {
   const [address, setAddress] = useState("");
   const [image, setImage] = useState(null);
   const [updating, setUpdating] = useState(false);
+  const { logout } = useAuth0();
 
   const handleLogout = () => {
     localStorage.removeItem("token");
-    navigate("/", { replace: true });
+
+    logout({
+      logoutParams: {
+        returnTo: window.location.origin,
+      },
+    });
   };
   const fetchUnreadCount = async () => {
     try {

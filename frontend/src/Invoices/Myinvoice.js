@@ -3,8 +3,11 @@ import { useEffect, useState } from "react";
 import AIChat from "../Ai/AIChat";
 import "./Myinvoice.css";
 import { useNavigate } from "react-router-dom";
+import { useAuth0 } from "@auth0/auth0-react";
+
 export default function Myinvoice() {
   const navigate = useNavigate();
+  const { logout } = useAuth0();
   const [invoices, setInvoices] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
 
@@ -29,7 +32,12 @@ export default function Myinvoice() {
   };
   const handleLogout = () => {
     localStorage.removeItem("token");
-    navigate("/", { replace: true });
+
+    logout({
+      logoutParams: {
+        returnTo: window.location.origin,
+      },
+    });
   };
   useEffect(() => {
     const token = localStorage.getItem("token");

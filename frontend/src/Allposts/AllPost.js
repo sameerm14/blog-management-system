@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Allpost.css";
 import AIChat from "../Ai/AIChat";
+import { useAuth0 } from "@auth0/auth0-react";
 
 export default function AllPost() {
   const [posts, setPosts] = useState([]);
@@ -13,6 +14,7 @@ export default function AllPost() {
   const [showComment, setShowComment] = useState({});
   const [popupMsg, setPopupMsg] = useState("");
   const [unreadCount, setUnreadCount] = useState(0);
+  const { logout } = useAuth0();
 
   const navigate = useNavigate();
 
@@ -37,7 +39,12 @@ export default function AllPost() {
   };
   const handleLogout = () => {
     localStorage.removeItem("token");
-    navigate("/", { replace: true });
+
+    logout({
+      logoutParams: {
+        returnTo: window.location.origin,
+      },
+    });
   };
 
   const fetchPosts = async (pageNumber = 1, searchTerm = "") => {

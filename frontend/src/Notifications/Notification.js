@@ -2,18 +2,25 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Notification.css";
 import AIChat from "../Ai/AIChat";
+import { useAuth0 } from "@auth0/auth0-react";
 
 export default function Notification() {
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const { logout } = useAuth0();
   const [unreadCount, setUnreadCount] = useState(0);
 
   const navigate = useNavigate();
 
   const handleLogout = () => {
     localStorage.removeItem("token");
-    navigate("/", { replace: true });
+
+    logout({
+      logoutParams: {
+        returnTo: window.location.origin,
+      },
+    });
   };
 
   const fetchNotifications = async () => {

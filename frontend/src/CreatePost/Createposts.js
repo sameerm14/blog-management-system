@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Createposts.css";
 import AIChat from "../Ai/AIChat";
+import { useAuth0 } from "@auth0/auth0-react";
 
 export default function Createposts() {
   const navigate = useNavigate();
@@ -13,12 +14,16 @@ export default function Createposts() {
   const [success, setSuccess] = useState("");
   const [limitMsg, setLimitMsg] = useState("");
   const [unreadCount, setUnreadCount] = useState(0);
+  const { logout } = useAuth0();
+
   const handleLogout = () => {
-    // 1. Remove token
     localStorage.removeItem("token");
 
-    // 2. Redirect to landing page
-    navigate("/", { replace: true });
+    logout({
+      logoutParams: {
+        returnTo: window.location.origin,
+      },
+    });
   };
 
   const handleFileChange = (e) => {
