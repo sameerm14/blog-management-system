@@ -1,5 +1,6 @@
 import AllPost from "./Allposts/AllPost";
 import "./App.css";
+import AuthCallback from "./AuthCallback";
 import AuthSync from "./AuthSync";
 import Createposts from "./CreatePost/Createposts";
 import Dashboard from "./Dashboard/Dashboard";
@@ -26,6 +27,7 @@ function App() {
         <Route path="/my-posts" element={<Myposts />} />
         <Route path="/getposts" element={<AllPost />} />
         <Route path="/plans" element={<Plans />} />
+        <Route path="/login/callback" element={<AuthCallback />} />
         <Route path="/invoices" element={<Myinvoice />} />
         <Route path="/notifications" element={<Notification />} />
         <Route path="/profile" element={<Profile />} />
