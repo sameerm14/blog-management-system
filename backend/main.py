@@ -1,5 +1,7 @@
 from fastapi import FastAPI, Depends, HTTPException, BackgroundTasks
 from sqlalchemy.orm import Query, Session
+import requests
+from fastapi import Header
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
 from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
 import models, schemas
@@ -30,7 +32,7 @@ from services.notification_service import send_comment_notification
 from services.notification_service import send_like_notification
 from fastapi.middleware.cors import CORSMiddleware
 
-
+AUTH0_DOMAIN = "dev-cv23bl242ncm1zbz.us.auth0.com"
 
 app = FastAPI()
 
@@ -52,6 +54,47 @@ os.makedirs(INVOICE_DIR, exist_ok=True)
 
 PROFILE_DIR = "media/profile"
 os.makedirs(PROFILE_DIR, exist_ok=True)
+
+
+@app.post("/auth/auth0-login")
+def auth0_login(
+    authorization: str = Header(None),
+    db: Session = Depends(get_db)
+):
+
+    if not authorization:
+        raise HTTPException(401, "Missing Authorization header")
+
+    token = authorization.split(" ")[1]
+
+    response = requests.get(
+        f"https://{AUTH0_DOMAIN}/userinfo",
+        headers={"Authorization": f"Bearer {token}"}
+    )
+
+    user_info = response.json()
+
+    email = user_info.get("email")
+    name = user_info.get("name")
+
+    if not email:
+        raise HTTPException(400, "Email not found")
+
+    user = db.query(models.User).filter(models.User.email == email).first()
+
+    if not user:
+        user = models.User(
+            username=name,
+            email=email,
+            password=None
+        )
+        db.add(user)
+        db.commit()
+        db.refresh(user)
+
+    jwt_token = create_access_token({"user_id": user.id})
+
+    return {"access_token": jwt_token}
 
 @app.post("/auth/register")
 def register(user: schemas.UserCreate, db: Session = Depends(get_db)):

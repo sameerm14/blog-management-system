@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import "./Login.css";
 import { useNavigate } from "react-router-dom";
 import Navbarl from "../Navbarlandingpage/Navbarl";
+import SocialLogin from "../SocialLinks/SocialLogin";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -82,7 +83,8 @@ export default function Login() {
             )}
             <button className="login-btn">Login</button>
           </form>
-
+          <div className="divider">OR</div>
+          <SocialLogin />
           <p className="register-text">
             Don't have an account?{" "}
             <span onClick={() => navigate("/register")}>Register</span>

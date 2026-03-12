@@ -1,5 +1,6 @@
 import AllPost from "./Allposts/AllPost";
 import "./App.css";
+import AuthSync from "./AuthSync";
 import Createposts from "./CreatePost/Createposts";
 import Dashboard from "./Dashboard/Dashboard";
 import Myinvoice from "./Invoices/Myinvoice";
@@ -15,6 +16,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 function App() {
   return (
     <Router>
+      <AuthSync />
       <Routes>
         <Route path="/" element={<Welcome />} />
         <Route path="/login" element={<Login />} />
