@@ -1,5 +1,6 @@
 from fastapi import FastAPI, Depends, HTTPException, BackgroundTasks
 from sqlalchemy.orm import Query, Session
+from apscheduler.schedulers.background import BackgroundScheduler
 import requests
 from fastapi import Header
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
@@ -197,12 +198,13 @@ def get_profile(
     ).first()
 
     return db_user
-
 @app.post("/posts", response_model=schemas.PostOut)
 def create_post(
     title: str = Form(...),
     content: str = Form(...),
-    images: Optional[List[UploadFile]] = File(None),   
+    publish_option: str = Form(...),   # draft / publish / schedule
+    scheduled_at: Optional[str] = Form(None),
+    images: Optional[List[UploadFile]] = File(None),
     db: Session = Depends(get_db),
     user = Depends(get_current_user)
 ):
@@ -219,7 +221,6 @@ def create_post(
             "You’ve reached your plan limit. Kindly upgrade your plan to continue."
         )
 
-  
     if images:
         if len(images) > plan.max_images_per_post:
             raise HTTPException(
@@ -236,11 +237,34 @@ def create_post(
                 shutil.copyfileobj(image.file, f)
             image_paths.append(f"/{file_location}")
 
+    status = "published"
+    publish_time = datetime.utcnow()
+
+    if publish_option == "draft":
+        status = "draft"
+        publish_time = None
+
+    elif publish_option == "schedule":
+
+        if not scheduled_at:
+            raise HTTPException(400, "scheduled_at required")
+
+        scheduled_time = datetime.fromisoformat(scheduled_at)
+
+        if scheduled_time <= datetime.utcnow():
+            raise HTTPException(400, "scheduled_at must be future time")
+
+        status = "scheduled"
+        publish_time = None
+
     new_post = models.Post(
         title=title,
         content=content,
         author_id=user.id,
-        images=",".join(image_paths) if image_paths else None
+        images=",".join(image_paths) if image_paths else None,
+        status=status,
+        scheduled_at=datetime.fromisoformat(scheduled_at) if scheduled_at else None,
+        published_at=publish_time
     )
 
     db.add(new_post)
@@ -248,13 +272,15 @@ def create_post(
     db.refresh(new_post)
 
     return schemas.PostOut(
-    id=new_post.id,
-    title=new_post.title,
-    content=new_post.content,
-    author_id=new_post.author_id,
-    created_at=new_post.created_at,
-    images=new_post.images.split(",") if new_post.images else []
-)
+        id=new_post.id,
+        title=new_post.title,
+        content=new_post.content,
+        author_id=new_post.author_id,
+        created_at=new_post.created_at,
+        images=new_post.images.split(",") if new_post.images else []
+    )
+
+
 @app.get("/subscription/check")
 def check_subscription(db: Session = Depends(get_db), user = Depends(get_current_user)):
     plan = get_active_plan(user, db)  # will raise 403 if no plan
@@ -1022,3 +1048,26 @@ def get_ai_chats(
     ).all()
 
     return chats
+
+
+def publish_scheduled_posts():
+
+    db = next(get_db())
+
+    now = datetime.utcnow()
+
+    posts = db.query(models.Post).filter(
+        models.Post.status == "scheduled",
+        models.Post.scheduled_at <= now
+    ).all()
+
+    for post in posts:
+        post.status = "published"
+        post.published_at = now
+
+    db.commit()
+
+
+scheduler = BackgroundScheduler()
+scheduler.add_job(publish_scheduled_posts, "interval", minutes=1)
+scheduler.start()

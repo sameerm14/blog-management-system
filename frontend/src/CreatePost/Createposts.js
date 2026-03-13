@@ -14,6 +14,12 @@ export default function Createposts() {
   const [success, setSuccess] = useState("");
   const [limitMsg, setLimitMsg] = useState("");
   const [unreadCount, setUnreadCount] = useState(0);
+
+  // NEW STATES
+  const [publishOption, setPublishOption] = useState("publish");
+  const [scheduleDate, setScheduleDate] = useState("");
+  const [scheduleTime, setScheduleTime] = useState("");
+
   const { logout } = useAuth0();
 
   const handleLogout = () => {
@@ -27,7 +33,7 @@ export default function Createposts() {
   };
 
   const handleFileChange = (e) => {
-    setImages(Array.from(e.target.files)); // allows multiple files
+    setImages(Array.from(e.target.files));
   };
 
   const fetchUnreadCount = async () => {
@@ -49,6 +55,7 @@ export default function Createposts() {
       console.log(err);
     }
   };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
@@ -56,10 +63,20 @@ export default function Createposts() {
     setLoading(true);
 
     const token = localStorage.getItem("token");
+
     const formData = new FormData();
     formData.append("title", title);
     formData.append("content", content);
-    images.forEach((img) => formData.append("images", img)); // multiple images
+
+    // NEW
+    formData.append("publish_option", publishOption);
+
+    if (publishOption === "schedule") {
+      const scheduledAt = `${scheduleDate}T${scheduleTime}`;
+      formData.append("scheduled_at", scheduledAt);
+    }
+
+    images.forEach((img) => formData.append("images", img));
 
     try {
       const res = await fetch(
@@ -90,10 +107,15 @@ export default function Createposts() {
 
       const data = await res.json();
       console.log("Post created:", data);
+
       setSuccess("🎉 Your post has been successfully created!");
+
       setTitle("");
       setContent("");
       setImages([]);
+      setScheduleDate("");
+      setScheduleTime("");
+
       setTimeout(() => {
         setSuccess("");
       }, 4000);
@@ -104,9 +126,11 @@ export default function Createposts() {
       setLoading(false);
     }
   };
+
   useEffect(() => {
     fetchUnreadCount();
   }, []);
+
   return (
     <>
       <nav className="navbar">
@@ -118,6 +142,7 @@ export default function Createposts() {
           <span onClick={() => navigate("/getposts")}>All Posts</span>
           <span onClick={() => navigate("/plans")}>Plans</span>
           <span onClick={() => navigate("/invoices")}>My Invoices</span>
+
           <span
             className="notification-icon"
             onClick={() => navigate("/notifications")}
@@ -127,6 +152,7 @@ export default function Createposts() {
               <span className="notif-count">{unreadCount}</span>
             )}
           </span>
+
           <span onClick={() => navigate("/profile")}>Profile</span>
         </div>
 
@@ -134,10 +160,14 @@ export default function Createposts() {
           Logout
         </button>
       </nav>
+
       {limitMsg && <div className="plan-limit-popup">{limitMsg}</div>}
+
       <div className="create-post-page">
         <h2>Share Your Thoughts ✨</h2>
+
         {error && <p className="error">{error}</p>}
+
         <form onSubmit={handleSubmit}>
           <div>
             <label>Title</label>
@@ -167,6 +197,46 @@ export default function Createposts() {
               onChange={handleFileChange}
             />
           </div>
+
+          {/* PUBLISH OPTIONS */}
+          <div>
+            <label>Publish Options</label>
+
+            <select
+              value={publishOption}
+              onChange={(e) => setPublishOption(e.target.value)}
+            >
+              <option value="publish">Publish Now</option>
+              <option value="draft">Save as Draft</option>
+              <option value="schedule">Schedule Post</option>
+            </select>
+          </div>
+
+          {/* DATE + TIME PICKER */}
+          {publishOption === "schedule" && (
+            <>
+              <div>
+                <label>Select Date</label>
+                <input
+                  type="date"
+                  value={scheduleDate}
+                  onChange={(e) => setScheduleDate(e.target.value)}
+                  required
+                />
+              </div>
+
+              <div>
+                <label>Select Time</label>
+                <input
+                  type="time"
+                  value={scheduleTime}
+                  onChange={(e) => setScheduleTime(e.target.value)}
+                  required
+                />
+              </div>
+            </>
+          )}
+
           {success && <p className="success">{success}</p>}
 
           <button type="submit" disabled={loading}>
@@ -174,7 +244,6 @@ export default function Createposts() {
           </button>
         </form>
       </div>
-      {/* Footer */}
 
       <footer className="dashboard-footer">
         <div className="footer-content">
@@ -195,6 +264,7 @@ export default function Createposts() {
           </div>
         </div>
       </footer>
+
       <AIChat />
     </>
   );

@@ -33,6 +33,10 @@ class Post(Base):
     images = Column(Text, nullable=True)  
     user = relationship("User") 
     views = Column(Integer, default=0)
+     
+    status = Column(String, default="published")  
+    scheduled_at = Column(DateTime, nullable=True)
+    published_at = Column(DateTime, nullable=True)
 
 
 class Comment(Base):
