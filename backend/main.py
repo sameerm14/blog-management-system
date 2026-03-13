@@ -1,3 +1,5 @@
+from turtle import title
+
 from fastapi import FastAPI, Depends, HTTPException, BackgroundTasks
 from sqlalchemy.orm import Query, Session
 from apscheduler.schedulers.background import BackgroundScheduler
@@ -35,14 +37,16 @@ from fastapi.middleware.cors import CORSMiddleware
 
 AUTH0_DOMAIN = "dev-cv23bl242ncm1zbz.us.auth0.com"
 
-app = FastAPI()
+app = FastAPI(root_path="")
+
+origins = [
+    "http://localhost:3000",
+    "https://blog-management-system-five.vercel.app"
+]
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:3000",
-        "https://blog-management-system-five.vercel.app"
-    ],
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -205,7 +209,7 @@ def get_profile(
 def create_post(
     title: str = Form(...),
     content: str = Form(...),
-    publish_option: str = Form(...),   # draft / publish / schedule
+    publish_option: str = Form(...),
     scheduled_at: Optional[str] = Form(None),
     images: Optional[List[UploadFile]] = File(None),
     db: Session = Depends(get_db),
@@ -221,15 +225,14 @@ def create_post(
     if post_count >= plan.max_posts:
         raise HTTPException(
             403,
-            "You’ve reached your plan limit. Kindly upgrade your plan to continue."
+            "You’ve reached your plan limit. Kindly upgrade your plan."
         )
 
-    if images:
-        if len(images) > plan.max_images_per_post:
-            raise HTTPException(
-                403,
-                "You’ve reached your plan limit. Kindly upgrade your plan to continue."
-            )
+    if images and len(images) > plan.max_images_per_post:
+        raise HTTPException(
+            403,
+            "Image limit exceeded for your subscription plan."
+        )
 
     image_paths = []
 
@@ -238,10 +241,12 @@ def create_post(
             file_location = os.path.join(MEDIA_DIR, image.filename)
             with open(file_location, "wb") as f:
                 shutil.copyfileobj(image.file, f)
+
             image_paths.append(f"/{file_location}")
 
     status = "published"
     publish_time = datetime.utcnow()
+    scheduled_time = None
 
     if publish_option == "draft":
         status = "draft"
@@ -252,7 +257,7 @@ def create_post(
         if not scheduled_at:
             raise HTTPException(400, "scheduled_at required")
 
-        scheduled_at=scheduled_time if publish_option == "schedule" else None
+        scheduled_time = datetime.fromisoformat(scheduled_at)
 
         if scheduled_time <= datetime.utcnow():
             raise HTTPException(400, "scheduled_at must be future time")
@@ -266,7 +271,7 @@ def create_post(
         author_id=user.id,
         images=",".join(image_paths) if image_paths else None,
         status=status,
-        scheduled_at=datetime.fromisoformat(scheduled_at) if scheduled_at else None,
+        scheduled_at=scheduled_time,
         published_at=publish_time
     )
 
@@ -292,11 +297,12 @@ def check_subscription(db: Session = Depends(get_db), user = Depends(get_current
 @app.get("/posts")
 def get_posts(
     db: Session = Depends(get_db),
-    page: int = Query(1, ge=1),      
-    limit: int = Query(10, ge=1),     
-    search: str = Query(None)           
+    page: int = Query(1, ge=1),
+    limit: int = Query(10, ge=1),
+    search: str = Query(None)
 ):
-    query = db.query(models.Post)
+
+    query = db.query(models.Post).filter(models.Post.status == "published")
 
     if search:
         query = query.filter(
