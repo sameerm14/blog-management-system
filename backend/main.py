@@ -39,7 +39,10 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=[
+        "http://localhost:3000",
+        "https://blog-management-system-five.vercel.app"
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -249,7 +252,7 @@ def create_post(
         if not scheduled_at:
             raise HTTPException(400, "scheduled_at required")
 
-        scheduled_time = datetime.fromisoformat(scheduled_at)
+        scheduled_at=scheduled_time if publish_option == "schedule" else None
 
         if scheduled_time <= datetime.utcnow():
             raise HTTPException(400, "scheduled_at must be future time")
@@ -1068,6 +1071,8 @@ def publish_scheduled_posts():
     db.commit()
 
 
-scheduler = BackgroundScheduler()
-scheduler.add_job(publish_scheduled_posts, "interval", minutes=1)
-scheduler.start()
+@app.on_event("startup")
+def start_scheduler():
+    scheduler = BackgroundScheduler()
+    scheduler.add_job(publish_scheduled_posts, "interval", minutes=1)
+    scheduler.start()
