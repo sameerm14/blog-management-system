@@ -9,6 +9,10 @@ export default function Myposts() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [unreadCount, setUnreadCount] = useState(0);
+  const [publishPopup, setPublishPopup] = useState({
+    show: false,
+    message: "",
+  });
 
   const { logout } = useAuth0();
   const navigate = useNavigate();
@@ -86,16 +90,27 @@ export default function Myposts() {
   const handlePublish = async (postId) => {
     const token = localStorage.getItem("token");
 
-    await fetch(
+    const res = await fetch(
       `https://blog-management-system-y5tx.onrender.com/posts/${postId}/publish`,
       {
         method: "PUT",
-        headers: { Authorization: `Bearer ${token}` },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       },
     );
 
-    // Refresh page after publishing
-    window.location.reload();
+    if (res.ok) {
+      setPublishPopup({
+        show: true,
+        message: "🎉 Your post is published successfully!",
+      });
+
+      // Refresh posts after short delay
+      setTimeout(() => {
+        window.location.reload();
+      }, 1500);
+    }
   };
 
   if (loading) return <p>Loading your posts...</p>;
@@ -127,7 +142,20 @@ export default function Myposts() {
           Logout
         </button>
       </nav>
+      {publishPopup.show && (
+        <div className="popup-overlay">
+          <div className="popup-box">
+            <h3>{publishPopup.message}</h3>
 
+            <button
+              className="popup-confirm"
+              onClick={() => setPublishPopup({ show: false, message: "" })}
+            >
+              OK
+            </button>
+          </div>
+        </div>
+      )}
       <div className="posts-container">
         {posts.length === 0 ? (
           <div className="no-posts-wrapper">
