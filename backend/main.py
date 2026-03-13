@@ -1,5 +1,3 @@
-
-from dateutil import parser
 from fastapi import FastAPI, Depends, HTTPException, BackgroundTasks
 from sqlalchemy.orm import Query, Session
 from apscheduler.schedulers.background import BackgroundScheduler
@@ -257,7 +255,7 @@ def create_post(
         if not scheduled_at:
             raise HTTPException(400, "scheduled_at required")
 
-            scheduled_time = parser.parse(scheduled_at)
+        scheduled_time = datetime.fromisoformat(scheduled_at)
 
         if scheduled_time <= datetime.utcnow():
             raise HTTPException(400, "scheduled_at must be future time")
