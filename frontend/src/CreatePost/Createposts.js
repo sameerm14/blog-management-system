@@ -72,7 +72,9 @@ export default function Createposts() {
     formData.append("publish_option", publishOption);
 
     if (publishOption === "schedule") {
-      const scheduledAt = `${scheduleDate}T${scheduleTime}`;
+      const scheduledAt = new Date(
+        `${scheduleDate}T${scheduleTime}`,
+      ).toISOString();
       formData.append("scheduled_at", scheduledAt);
     }
 

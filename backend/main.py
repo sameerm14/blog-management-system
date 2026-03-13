@@ -291,7 +291,6 @@ def create_post(
 def check_subscription(db: Session = Depends(get_db), user = Depends(get_current_user)):
     plan = get_active_plan(user, db)  # will raise 403 if no plan
     return {"plan": plan.name, "max_posts": plan.max_posts}
-
 @app.get("/posts")
 def get_posts(
     db: Session = Depends(get_db),
@@ -299,6 +298,19 @@ def get_posts(
     limit: int = Query(10, ge=1),
     search: str = Query(None)
 ):
+
+    # AUTO PUBLISH SCHEDULED POSTS
+    now = datetime.utcnow()
+
+    db.query(models.Post).filter(
+        models.Post.status == "scheduled",
+        models.Post.scheduled_at <= now
+    ).update({
+        "status": "published",
+        "published_at": now
+    })
+
+    db.commit()
 
     query = db.query(models.Post).filter(models.Post.status == "published")
 
@@ -332,7 +344,6 @@ def get_posts(
         "limit": limit,
         "posts": result
     }
-
 
 from fastapi import UploadFile, File
 
