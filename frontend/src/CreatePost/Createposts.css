@@ -1,224 +1,39 @@
-/* Createposts.css */
-
-/* Card Container */
-.create-post-page {
-  width: 100%;
-  max-width: 480px; /* compact card width */
-  margin: 60px auto; /* centered with spacing from top */
-  background: #ffffff;
-  padding: 35px 30px;
-  border-radius: 16px;
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease;
-  position: relative;
-  overflow: hidden;
-}
-
-.create-post-page::before {
-  content: "";
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: linear-gradient(135deg, #2e86c1, #85c1e9);
-  opacity: 0.05;
-  transform: rotate(25deg);
-  pointer-events: none; /* <<< This fixes the clicking issue */
-}
-
-/* Card Hover Lift */
-.create-post-page:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.15);
-}
-
-/* Heading */
-.create-post-page h2 {
-  text-align: center;
-  font-size: 1.9rem;
-  font-weight: 700;
-  margin-bottom: 25px;
-  color: #000000;
-  letter-spacing: 0.5px;
-  transition: color 0.3s ease;
-}
-
-.create-post-page h2:hover {
-  color: #1b4f72;
-}
-
-/* Form Layout */
-.create-post-page form {
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-}
-
-.create-post-page form label {
-  font-weight: 600;
-  color: #34495e;
-  margin-bottom: 5px;
-  font-size: 0.95rem;
-}
-
-.create-post-page form input[type="text"],
-.create-post-page form textarea,
-.create-post-page form input[type="file"] {
+/* Publish Options Dropdown */
+.create-post-page select {
   width: 100%;
   padding: 12px 15px;
   border-radius: 10px;
   border: 1px solid #d1d5db;
   font-size: 1rem;
-  background: #fdfdfd;
+  background-color: #fdfdfd;
+  cursor: pointer;
   transition: all 0.3s ease;
+  appearance: none; /* removes default arrow style */
 }
 
-.create-post-page form input[type="text"]:focus,
-.create-post-page form textarea:focus,
-.create-post-page form input[type="file"]:focus {
+/* Focus Effect */
+.create-post-page select:focus {
   outline: none;
   border-color: #2e86c1;
   box-shadow: 0 0 10px rgba(46, 134, 193, 0.2);
   transform: scale(1.01);
 }
 
-.create-post-page form textarea {
-  min-height: 130px;
-  resize: vertical;
+/* Hover Effect */
+.create-post-page select:hover {
+  border-color: #2e86c1;
 }
 
-/* Buttons */
-.create-post-page button {
-  padding: 12px 20px;
-  background: hsl(60, 4%, 62%);
-  color: #0b0202;
-  font-weight: 600;
-  font-size: 1rem;
-  border: none;
-  border-radius: 12px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.create-post-page button:hover {
-  background: #666264fe;
-  transform: translateY(-2px) scale(1.02);
-  box-shadow: 0 6px 18px rgba(18, 13, 13, 0.15);
-}
-
-.create-post-page button:disabled {
-  background: #0b0b0b;
-  cursor: not-allowed;
-  transform: none;
-  box-shadow: none;
-}
-
-/* Error Styling */
-.create-post-page .error {
-  color: #c0392b;
-  font-weight: 600;
-  text-align: center;
-  animation: shake 0.3s ease;
-}
-
-/* Shake Animation */
-@keyframes shake {
-  0% {
-    transform: translateX(0);
-  }
-  25% {
-    transform: translateX(-5px);
-  }
-  50% {
-    transform: translateX(5px);
-  }
-  75% {
-    transform: translateX(-5px);
-  }
-  100% {
-    transform: translateX(0);
-  }
-}
-
-/* Responsive */
-@media (max-width: 500px) {
-  .create-post-page {
-    margin: 40px 15px;
-    padding: 25px 20px;
-  }
-}
-.create-post-page .success {
-  color: #27ae60; /* nice green */
-  font-weight: 600;
-  text-align: center;
-  margin-bottom: 10px;
-  animation: fadeIn 0.5s ease;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-5px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-.plan-limit-popup {
-  position: fixed;
-  top: 60px; /* below navbar */
-  left: 50%;
-  transform: translateX(-50%);
-  background-color: #242423;
-  color: #fff;
-  padding: 12px 24px;
-  border-radius: 6px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  z-index: 1000;
-  font-weight: bold;
-  animation: slideDown 0.5s ease;
-}
-
-@keyframes slideDown {
-  from {
-    opacity: 0;
-    transform: translate(-50%, -20px);
-  }
-  to {
-    opacity: 1;
-    transform: translate(-50%, 0);
-  }
-}
-
-.notification-icon {
-  position: relative;
-  display: inline-block;
-  font-size: 28px;
-  cursor: pointer;
-}
-.notif-count {
-  position: absolute;
-  top: 2px; /* change from -6px */
-  right: -2px;
-
-  background: red;
-  color: white;
-  font-size: 12px;
-  font-weight: bold;
-
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  border: 2px solid white;
-}
-.navbar {
-  position: relative;
-  overflow: visible;
+/* Optional: Add Custom Dropdown Arrow */
+.create-post-page select {
+  background-image:
+    linear-gradient(45deg, transparent 50%, #2e86c1 50%),
+    linear-gradient(135deg, #2e86c1 50%, transparent 50%);
+  background-position:
+    calc(100% - 20px) calc(1em + 2px),
+    calc(100% - 15px) calc(1em + 2px);
+  background-size:
+    5px 5px,
+    5px 5px;
+  background-repeat: no-repeat;
 }
