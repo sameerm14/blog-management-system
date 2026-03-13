@@ -1,6 +1,7 @@
 from fastapi import FastAPI, Depends, HTTPException, BackgroundTasks
 from sqlalchemy.orm import Query, Session
 from apscheduler.schedulers.background import BackgroundScheduler
+from datetime import datetime, timedelta, timezone
 import requests
 from fastapi import Header
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
@@ -28,7 +29,7 @@ from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib.units import inch
 import uuid
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from services.notification_service import send_comment_notification
 from services.notification_service import send_like_notification
 from fastapi.middleware.cors import CORSMiddleware
@@ -243,7 +244,7 @@ def create_post(
             image_paths.append(f"/{file_location}")
 
     status = "published"
-    publish_time = datetime.utcnow()
+    publish_time = datetime.now(timezone.utc)
     scheduled_time = None
 
     if publish_option == "draft":
@@ -257,7 +258,7 @@ def create_post(
 
         scheduled_time = datetime.fromisoformat(scheduled_at)
 
-        if scheduled_time <= datetime.utcnow():
+        if scheduled_time <= datetime.now(timezone.utc):
             raise HTTPException(400, "scheduled_at must be future time")
 
         status = "scheduled"
@@ -1074,7 +1075,7 @@ def publish_scheduled_posts():
     print("Running scheduler...")
 
     db = next(get_db())
-    now = datetime.utcnow()
+    now = datetime.now(timezone.utc)
 
     posts = db.query(models.Post).filter(
         models.Post.status == "scheduled",
