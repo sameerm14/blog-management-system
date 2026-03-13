@@ -1,5 +1,3 @@
-from turtle import title
-
 from fastapi import FastAPI, Depends, HTTPException, BackgroundTasks
 from sqlalchemy.orm import Query, Session
 from apscheduler.schedulers.background import BackgroundScheduler
@@ -390,24 +388,27 @@ def delete_post(post_id: int,
 
     return {"message": "Post deleted"}
 
-
 @app.get("/posts/mine")
 def my_posts(db: Session = Depends(get_db),
              user = Depends(get_current_user)):
 
-    posts = db.query(models.Post).filter(models.Post.author_id == user.id).all()
+    posts = db.query(models.Post).filter(
+        models.Post.author_id == user.id
+    ).all()
 
     result = []
+
     for post in posts:
-        images_list = post.images.split(",") if post.images else []
         result.append({
             "id": post.id,
             "title": post.title,
             "content": post.content,
-            "author_id": post.author_id,
+            "status": post.status,   # IMPORTANT
+            "scheduled_at": post.scheduled_at,
             "created_at": post.created_at,
-            "images": images_list
+            "images": post.images.split(",") if post.images else []
         })
+
     return result
 
 @app.post("/posts/{post_id}/comment")
