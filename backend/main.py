@@ -1,3 +1,5 @@
+
+from dateutil import parser
 from fastapi import FastAPI, Depends, HTTPException, BackgroundTasks
 from sqlalchemy.orm import Query, Session
 from apscheduler.schedulers.background import BackgroundScheduler
@@ -255,7 +257,7 @@ def create_post(
         if not scheduled_at:
             raise HTTPException(400, "scheduled_at required")
 
-        scheduled_time = datetime.fromisoformat(scheduled_at)
+            scheduled_time = parser.parse(scheduled_at)
 
         if scheduled_time <= datetime.utcnow():
             raise HTTPException(400, "scheduled_at must be future time")
@@ -1059,11 +1061,10 @@ def get_ai_chats(
 
     return chats
 
-
 def publish_scheduled_posts():
+    print("Running scheduler...")
 
     db = next(get_db())
-
     now = datetime.utcnow()
 
     posts = db.query(models.Post).filter(
@@ -1071,7 +1072,10 @@ def publish_scheduled_posts():
         models.Post.scheduled_at <= now
     ).all()
 
+    print("Scheduled posts found:", len(posts))
+
     for post in posts:
+        print("Publishing:", post.id)
         post.status = "published"
         post.published_at = now
 
