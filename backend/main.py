@@ -403,9 +403,10 @@ def delete_post(post_id: int,
     return {"message": "Post deleted"}
 
 @app.get("/posts/mine")
-def my_posts(db: Session = Depends(get_db),
-             user = Depends(get_current_user)):
-
+def get_my_posts(
+    db: Session = Depends(get_db),
+    user = Depends(get_current_user)
+):
     posts = db.query(models.Post).filter(
         models.Post.author_id == user.id
     ).all()
