@@ -292,6 +292,8 @@ def create_post(
 def check_subscription(db: Session = Depends(get_db), user = Depends(get_current_user)):
     plan = get_active_plan(user, db)  # will raise 403 if no plan
     return {"plan": plan.name, "max_posts": plan.max_posts}
+
+
 @app.get("/posts")
 def get_posts(
     db: Session = Depends(get_db),
@@ -301,7 +303,7 @@ def get_posts(
 ):
 
     # AUTO PUBLISH SCHEDULED POSTS
-    now = datetime.utcnow()
+    now = datetime.now(timezone.utc)
 
     db.query(models.Post).filter(
         models.Post.status == "scheduled",
@@ -1097,3 +1099,31 @@ def start_scheduler():
     scheduler = BackgroundScheduler()
     scheduler.add_job(publish_scheduled_posts, "interval", minutes=1)
     scheduler.start()
+
+
+@app.put("/posts/{post_id}/publish")
+def publish_draft_post(
+    post_id: int,
+    db: Session = Depends(get_db),
+    user = Depends(get_current_user)
+):
+
+    post = db.query(models.Post).filter(
+        models.Post.id == post_id
+    ).first()
+
+    if not post:
+        raise HTTPException(404, "Post not found")
+
+    if post.author_id != user.id:
+        raise HTTPException(403, "Not allowed")
+
+    if post.status != "draft":
+        raise HTTPException(400, "Only draft posts can be published")
+
+    post.status = "published"
+    post.published_at = datetime.now(timezone.utc)
+
+    db.commit()
+
+    return {"message": "Post published successfully"}

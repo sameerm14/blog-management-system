@@ -6,6 +6,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 
 export default function Createposts() {
   const navigate = useNavigate();
+
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [images, setImages] = useState([]);
@@ -15,7 +16,6 @@ export default function Createposts() {
   const [limitMsg, setLimitMsg] = useState("");
   const [unreadCount, setUnreadCount] = useState(0);
 
-  // NEW STATES
   const [publishOption, setPublishOption] = useState("publish");
   const [scheduleDate, setScheduleDate] = useState("");
   const [scheduleTime, setScheduleTime] = useState("");
@@ -24,7 +24,6 @@ export default function Createposts() {
 
   const handleLogout = () => {
     localStorage.removeItem("token");
-
     logout({
       logoutParams: {
         returnTo: window.location.origin,
@@ -58,6 +57,7 @@ export default function Createposts() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     setError("");
     setSuccess("");
     setLoading(true);
@@ -67,14 +67,13 @@ export default function Createposts() {
     const formData = new FormData();
     formData.append("title", title);
     formData.append("content", content);
-
-    // NEW
     formData.append("publish_option", publishOption);
 
     if (publishOption === "schedule") {
       const scheduledAt = new Date(
         `${scheduleDate}T${scheduleTime}`,
       ).toISOString();
+
       formData.append("scheduled_at", scheduledAt);
     }
 
@@ -103,24 +102,23 @@ export default function Createposts() {
       if (!res.ok) {
         const data = await res.json();
         setError(data.detail || "Something went wrong");
-        setLoading(false);
         return;
       }
 
-      const data = await res.json();
-      console.log("Post created:", data);
+      setSuccess("🎉 Post created successfully!");
 
-      setSuccess("🎉 Your post has been successfully created!");
-
+      // RESET FORM
       setTitle("");
       setContent("");
       setImages([]);
       setScheduleDate("");
       setScheduleTime("");
+      setPublishOption("publish");
 
+      // 🔥 Redirect to My Posts
       setTimeout(() => {
-        setSuccess("");
-      }, 4000);
+        navigate("/my-posts");
+      }, 1000);
     } catch (err) {
       console.log(err);
       setError("Network error");
@@ -200,10 +198,8 @@ export default function Createposts() {
             />
           </div>
 
-          {/* PUBLISH OPTIONS */}
           <div>
             <label>Publish Options</label>
-
             <select
               value={publishOption}
               onChange={(e) => setPublishOption(e.target.value)}
@@ -214,7 +210,6 @@ export default function Createposts() {
             </select>
           </div>
 
-          {/* DATE + TIME PICKER */}
           {publishOption === "schedule" && (
             <>
               <div>
@@ -246,26 +241,6 @@ export default function Createposts() {
           </button>
         </form>
       </div>
-
-      <footer className="dashboard-footer">
-        <div className="footer-content">
-          <div className="footer-left">
-            <h3>BlogPlatform</h3>
-            <p>Share ideas, connect with people, and grow your knowledge.</p>
-          </div>
-
-          <div className="footer-links">
-            <span onClick={() => navigate("/dashboard")}>Home</span>
-            <span onClick={() => navigate("/getposts")}>Posts</span>
-            <span onClick={() => navigate("/plans")}>Plans</span>
-            <span onClick={() => navigate("/profile")}>Profile</span>
-          </div>
-
-          <div className="footer-right">
-            <p>© 2026 BlogPlatform. All rights reserved.</p>
-          </div>
-        </div>
-      </footer>
 
       <AIChat />
     </>
